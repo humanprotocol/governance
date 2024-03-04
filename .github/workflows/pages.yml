@@ -1,0 +1,65 @@
+name: Frontend
+
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  REACT_APP_WALLET_CONNECT_PROJECT_ID: ${{ vars.REACT_APP_WALLET_CONNECT_PROJECT_ID }}
+  REACT_APP_GOVERNANCE_HUB_ADDRESS: ${{ vars.REACT_APP_GOVERNANCE_HUB_ADDRESS }}
+  REACT_APP_HUB_VOTE_TOKEN: ${{ vars.REACT_APP_HUB_VOTE_TOKEN }}
+  REACT_APP_HUB_CHAIN_ID: ${{ vars.REACT_APP_HUB_CHAIN_ID }}
+  REACT_APP_RPC_URL_80001: ${{ secrets.REACT_APP_RPC_URL_80001 }}
+  REACT_APP_VOTE_AGGREGATOR_ADDRESS: ${{ vars.REACT_APP_VOTE_AGGREGATOR_ADDRESS }}
+  REACT_APP_SHOW_TEST_BANNER: ${{ vars.REACT_APP_SHOW_TEST_BANNER }}
+  FRONTEND_SPOKE_PARAMS: ${{ vars.FRONTEND_SPOKE_PARAMS }}
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 14
+        registry-url: https://registry.npmjs.org
+
+    - name: Prepare variables
+      run: ./frontend_create_vars.sh
+      shell: bash
+      working-directory: .github/files
+        
+    - run: yarn install
+      working-directory: frontend
+      shell: bash
+
+    - run: yarn build
+      working-directory: frontend
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: frontend/build
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

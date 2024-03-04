@@ -1,4 +1,4 @@
-# Vote Aggregator
+# Vote Aggregator 
 
 The "Vote Aggregator" is an application designed to serve as a backend component for the Human Protocol. It's responsible for collecting votes from various chains, with a simple REST API to interface with the frontend.
 
@@ -15,8 +15,8 @@ Contract classes are generated from ABIs, and all configurations (like the hub, 
 
 ## How to Setup
 
-1. Clone this repository: `git clone https://github.com/blockydevs/bdmh-cross-chain-governance`
-2. Navigate to the project directory: `cd vote-aggregator`
+1. Clone this repository: `git clone https://github.com/humanprotocol/governance.git`
+2. Navigate to the project directory: `cd server`
 3. Create an .env file in the project root and populate it with appropriate values (refer to the Configuration section)
 4. Build: `docker-compose -f docker-compose.yml build vote-aggregator`
 5. Run: `docker-compose -f docker-compose.yml up`
