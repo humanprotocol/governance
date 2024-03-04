@@ -1,4 +1,4 @@
-/vote-aggregator/.env
-/vote-aggregator/node_modules/
-/vote-aggregator/dist/
+/server/.env
+/server/node_modules/
+/server/dist/
 .DS_Store
