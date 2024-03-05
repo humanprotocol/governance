@@ -26,6 +26,7 @@ Accessibility features are integrated to ensure that all users, regardless of th
 
 > [!IMPORTANT]  
 > Fill out the ```.env``` variables following ```.env.example```
+> Follow the README in ```/client``` directory 
 
 - **Proposal List & Details**: View and understand proposals, their statuses, and details.
 - **Voting**: Participate in governance by voting on proposals using either hub or spoke chain tokens.
@@ -34,6 +35,7 @@ Accessibility features are integrated to ensure that all users, regardless of th
 
 > [!IMPORTANT]  
 > Fill out the ```.env``` variable following ```.env.example```
+> Follow the README in ```/server``` directory 
 
 
 - **Vote Collection & Aggregation**: Collects and aggregates votes across chains for accurate representation.
