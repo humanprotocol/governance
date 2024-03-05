@@ -78,31 +78,20 @@ module.exports = [
 
 > [!NOTE]
 > Follow the **README** in ```/client``` directory 
-=======
-=======
->>>>>>> 692a4c9 (add features)
+
 ## Key Components
 ### Client
 
-
 > [!IMPORTANT]  
-<<<<<<< HEAD
 > Fill out the .env variables following .env.example 
->>>>>>> 2b99e31 (add readme)
-=======
 > Fill out the ```.env``` variables following ```.env.example```
-<<<<<<< HEAD
->>>>>>> 692a4c9 (add features)
-=======
 > Follow the README in ```/client``` directory 
->>>>>>> 8c19753 (correct instructions)
+
 
 - **Proposal List & Details**: View and understand proposals, their statuses, and details.
 - **Voting**: Participate in governance by voting on proposals using either hub or spoke chain tokens.
 
 ### Server (Vote Aggregator)
-
-
 > [!NOTE]
 > Follow the **README** in ```/server``` directory 
 
