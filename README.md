@@ -10,6 +10,7 @@ This project leverages a modified Uniswap Interface to facilitate a transparent 
 
 ## Features
 
+
 #### Transparent Governance Process
 Transparency is achieved through features that allow users to access detailed proposals, view real-time voting results, and track the progression and outcomes of governance actions. 
 #### Enhanced User Participation 
@@ -78,11 +79,20 @@ module.exports = [
 
 > [!NOTE]
 > Follow the **README** in ```/client``` directory 
+=======
+## Key Components
+### Client
+
+
+> [!IMPORTANT]  
+> Fill out the .env variables following .env.example 
+>>>>>>> 2b99e31 (add readme)
 
 - **Proposal List & Details**: View and understand proposals, their statuses, and details.
 - **Voting**: Participate in governance by voting on proposals using either hub or spoke chain tokens.
 
 ### Server (Vote Aggregator)
+
 
 > [!NOTE]
 > Follow the **README** in ```/server``` directory 
@@ -106,6 +116,7 @@ The governance UI ```/client``` requires Node.js version 14 due to Uniswap depen
 
 - Install version 14 by running ```nvm install 14```
 - Switch to version 14 by running ```nvm use 14```
+
 - Check using ```nvm --version```
 
 ### LICENSE 
