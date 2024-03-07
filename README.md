@@ -35,7 +35,7 @@ Accessibility features are integrated to ensure that all users, regardless of th
 #### Avalanche (Spoke)
 - [HMT - Token](https://testnet.snowtrace.io/address/0xB58f8eA7916501E80CfC848165c92E4Cc34511fF/contract/43113/code)
 - [vHMT - vote Token](https://testnet.snowtrace.io/address/0xD804Fe2e52180C6A38d7BdFeB5163b2D40BE958E/contract/43113/code) 
-- [DAO SPOKE](https://testnet.snowtrace.io/address/0xcAd4C61fC7F600D2786bf9CE0c21C9a502ba9814/contract/43113/code)
+- [Dao Spoke](https://testnet.snowtrace.io/address/0xcAd4C61fC7F600D2786bf9CE0c21C9a502ba9814/contract/43113/code)
 
 
 ### Verification process 
