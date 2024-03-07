@@ -33,15 +33,23 @@ Accessibility features are integrated to ensure that all users, regardless of th
 - [Governor](https://mumbai.polygonscan.com/address/0xb933ceFcfceB73F6396aEd10793486a0212Ec7D2#code)
 
 #### Avalanche (Spoke)
-
+- [HMT - Token](https://testnet.snowtrace.io/address/0xB58f8eA7916501E80CfC848165c92E4Cc34511fF/contract/43113/code)
+- [vHMT - vote Token](https://testnet.snowtrace.io/address/0xD804Fe2e52180C6A38d7BdFeB5163b2D40BE958E/contract/43113/code) 
+- [DAO SPOKE](https://testnet.snowtrace.io/address/0xcAd4C61fC7F600D2786bf9CE0c21C9a502ba9814/contract/43113/code)
 
 
 ### Verification process 
 
-- npx hardhat verify --network polygonMumbai <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' 
-- npx hardhat verify --network polygonMumbai <vHMT_ADDRESS> <HMT_ADDRESS>
-- npx hardhat verify --network polygonMumbai --constructor-args arguments.js <TIMELOCK_CONTROLLER_ADDRESS>
-- npx hardhat verify --network polygonMumbai --constructor-args arguments.js <GOVERNOR_ADDRESS>
+- ```npx hardhat verify --network polygonMumbai <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' ```
+- ```npx hardhat verify --network polygonMumbai <vHMT_ADDRESS> <HMT_ADDRESS> ```
+- ```npx hardhat verify --network polygonMumbai --constructor-args arguments.js <TIMELOCK_CONTROLLER_ADDRESS> ```
+- ```npx hardhat verify --network polygonMumbai --constructor-args arguments.js <GOVERNOR_ADDRESS> ```
+- ```npx hardhat verify --network avalancheFujiTestnet <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' ```
+- ```npx hardhat verify --network avalancheFujiTestnet <vHMT_ADDRESS> <HMT_ADDRESS>```
+
+>[!TIP]
+>Pad the Governor address in the arguments.js to have a 32 bytes parameter. 
+- ```npx hardhat verify --network avalancheFujiTestnet --constructor-args arguments.js <DAO_SPOKE>``` 
 
 
 
