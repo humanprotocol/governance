@@ -22,16 +22,19 @@ Accessibility features are integrated to ensure that all users, regardless of th
 
  ## Contracts 
 
- > [!NOTE]
-> MUMBAI is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
+>[!NOTE]
+>MUMBAI is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
 
-#### Mumbai : 
+#### Mumbai (Hub) 
 
 - [HMT - Token](https://mumbai.polygonscan.com/address/0x076CCe4311997Dd6B370ff9b6407786eB0e33d60#code)
 - [vHMT - vote Token](https://mumbai.polygonscan.com/address/0x700cfdf6703BC6B079f0dEB2D979917C63046024#code)
 - [TimelockController](https://mumbai.polygonscan.com/address/0xC63E411196fDdaBB5D8e155659876b053050Fd5d#code)
+- [Governor](https://mumbai.polygonscan.com/address/0xb933ceFcfceB73F6396aEd10793486a0212Ec7D2#code)
 
-#### Avalanche 
+#### Avalanche (Spoke)
+
+
 
 ### Verification process 
 
