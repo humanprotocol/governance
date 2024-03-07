@@ -20,6 +20,28 @@ Accessibility features are integrated to ensure that all users, regardless of th
  Cross-chain voting ensures that governance is not siloed within a single blockchain but is a holistic process that leverages the strengths and community of multiple networks. 
 
 
+ ## Contracts 
+
+ > [!NOTE]
+> MUMBAI is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
+
+#### Mumbai : 
+
+- [HMT - Token](https://mumbai.polygonscan.com/address/0x076CCe4311997Dd6B370ff9b6407786eB0e33d60#code)
+- [vHMT - vote Token](https://mumbai.polygonscan.com/address/0x700cfdf6703BC6B079f0dEB2D979917C63046024#code)
+- [TimelockController](https://mumbai.polygonscan.com/address/0xC63E411196fDdaBB5D8e155659876b053050Fd5d#code)
+
+#### Avalanche 
+
+### Verification process 
+
+- npx hardhat verify --network polygonMumbai <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' 
+- npx hardhat verify --network polygonMumbai <vHMT_ADDRESS> <HMT_ADDRESS>
+- npx hardhat verify --network polygonMumbai --constructor-args arguments.js <TIMELOCK_CONTROLLER_ADDRESS>
+- npx hardhat verify --network polygonMumbai --constructor-args arguments.js <GOVERNOR_ADDRESS>
+
+
+
 ## Key Components
 ### Client
 
