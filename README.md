@@ -36,9 +36,25 @@ Accessibility features are integrated to ensure that all users, regardless of th
 - [HMT - Token](https://testnet.snowtrace.io/address/0xE7DBF0BA39572593769D4273f93d39BdA56df101)
 - [vHMT - vote Token](https://testnet.snowtrace.io/address/0x6afbD41dC1C1cd2AF2c55eD2d98A386C18aC2dfd) 
 - [Dao Spoke](https://testnet.snowtrace.io/address/0x907F05C4B0E19E316b9b28baC9DDf5E6490057c8/contract/43113/code)
+=======
+>MUMBAI is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
+
+#### Mumbai (Hub) 
+
+- [HMT - Token](https://mumbai.polygonscan.com/address/0x076CCe4311997Dd6B370ff9b6407786eB0e33d60#code)
+- [vHMT - vote Token](https://mumbai.polygonscan.com/address/0x700cfdf6703BC6B079f0dEB2D979917C63046024#code)
+- [TimelockController](https://mumbai.polygonscan.com/address/0xC63E411196fDdaBB5D8e155659876b053050Fd5d#code)
+- [Governor](https://mumbai.polygonscan.com/address/0xb933ceFcfceB73F6396aEd10793486a0212Ec7D2#code)
+
+#### Avalanche (Spoke)
+- [HMT - Token](https://testnet.snowtrace.io/address/0xB58f8eA7916501E80CfC848165c92E4Cc34511fF/contract/43113/code)
+- [vHMT - vote Token](https://testnet.snowtrace.io/address/0xD804Fe2e52180C6A38d7BdFeB5163b2D40BE958E/contract/43113/code) 
+- [Dao Spoke](https://testnet.snowtrace.io/address/0xcAd4C61fC7F600D2786bf9CE0c21C9a502ba9814/contract/43113/code)
+>>>>>>> d482cf7 (update contract addresses on readme  (#5))
 
 
 ### Verification process 
+
 
 - ```npx hardhat verify --network sepolia <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' ```
 - ```npx hardhat verify --network sepolia <vHMT_ADDRESS> <HMT_ADDRESS> ```
@@ -69,8 +85,6 @@ module.exports = [
   4,
 ];
 ``` 
-
-
 
 
 ## Key Components
