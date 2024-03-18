@@ -14,12 +14,8 @@
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "*",
         "Access-Control-Allow-Headers": "X-Requested-With,Content-Type,Accept"
-      }
-    }
-  ],
-  "functions": {
-    "src/app.ts": {
+      },
       "maxDuration": 30
     }
-  }
+  ]
 }
