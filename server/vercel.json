@@ -4,8 +4,10 @@
     {
       "src": "src/app.ts",
       "use": "@vercel/node",
-      "functions": {
-        "/src/app.ts": { "maxDuration": 300 }
+      "config": {
+        "functions": {
+          "*": { "maxDuration": 300 }
+        }
       }
     }
   ],
