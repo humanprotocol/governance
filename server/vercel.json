@@ -6,7 +6,7 @@
       "use": "@vercel/node",
       "config": {
         "functions": {
-          "*": { "maxDuration": 300 }
+          "src/**": { "maxDuration": 300 }
         }
       }
     }
