@@ -11,7 +11,7 @@ const hubContractABI = HUB_ABI_JSON;
 const spokeContractABI = SPOKE_ABI_JSON;
 
 export const fetchProposalData = async (proposalId) => {
-    const proposal = await kv.get("proposalId");
+    const proposal = await kv.get(proposalId);
     
     if (proposal) {
         return proposal;
