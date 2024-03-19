@@ -1,4 +1,5 @@
-import {client} from '../config/redis';
+import { kv } from "@vercel/kv";
+
 import {hub, networks} from '../config/web3';
 import Web3 from 'web3';
 import HUB_ABI_JSON from '../governance-hub.json';
@@ -10,12 +11,13 @@ const hubContractABI = HUB_ABI_JSON;
 const spokeContractABI = SPOKE_ABI_JSON;
 
 export const fetchProposalData = async (proposalId) => {
-    const exists = await client.exists(proposalId);
-    if (exists) {
-        return await client.get(proposalId);
-    } else {
-        return await fetchProposalVotesFromNetworks(proposalId);
-    }
+    const proposal = await kv.get(proposalId);
+    
+    if (proposal) {
+        return proposal;
+    } 
+
+    return await fetchProposalVotesFromNetworks(proposalId);
 };
 
 async function fetchProposalVotesFromNetworks(proposalId) {
@@ -35,7 +37,7 @@ async function fetchProposalVotesFromNetworks(proposalId) {
 
     if (await hubContract.methods.collectionFinished(proposalId).call()) {
         const finalResult = JSON.stringify(results, replacer);
-        await client.set(proposalId, finalResult);
+        await kv.set(proposalId, finalResult);
 
         return finalResult;
     }
@@ -67,7 +69,7 @@ async function fetchProposalVotesFromNetworks(proposalId) {
         }
 
         const finalResult = JSON.stringify(results, replacer);
-        await client.set(proposalId, finalResult);
+        await kv.set(proposalId, finalResult);
 
         return finalResult;
     }
@@ -77,8 +79,8 @@ async function fetchProposalVotesFromNetworks(proposalId) {
     }
 
     const finalResult = JSON.stringify(results, replacer);
-    await client.set(proposalId, finalResult);
-    await client.expire(proposalId, Number(process.env.REDIS_EXPIRATION_TIME_IN_SEC));
+    await kv.set(proposalId, finalResult);
+    await kv.expire(proposalId, Number(process.env.REDIS_EXPIRATION_TIME_IN_SEC));
 
     return finalResult;
 }

@@ -10,3 +10,5 @@ app.use(proposalRoutes);
 app.listen(port, () => {
     console.log(`Application is listening on port ${port}`);
 });
+
+export default app

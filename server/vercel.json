@@ -1,20 +1,17 @@
 {
   "version": 2,
-  "builds": [
+  "buildCommand": "yarn build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/app.ts": {
+      "maxDuration": 300
+    }
+  },
+  "rewrites": [
     {
-      "src": "src/app.ts",
-      "use": "@vercel/node"
+      "source": "/(.*)",
+      "destination": "/api/app.ts"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "src/app.ts",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Access-Control-Allow-Headers": "X-Requested-With,Content-Type,Accept"
-      }
-    }
-  ]
+  "ignoreCommand": "git diff HEAD^ HEAD --quiet ."
 }
