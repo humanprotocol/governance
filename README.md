@@ -52,6 +52,26 @@ Accessibility features are integrated to ensure that all users, regardless of th
 - ```npx hardhat verify --network avalancheFujiTestnet --constructor-args arguments.js <DAO_SPOKE>``` 
 
 
+>[!TIP]
+> Arguments.js file would be like this :
+```
+module.exports = [
+  '<ADDRESS>',
+  '<ADDRESS>',
+  [],
+  5,
+  '<ADDRESS>',
+  '<ADDRESS>',
+  2,
+  1,
+  300,
+  0,
+  4,
+];
+``` 
+
+
+
 
 ## Key Components
 ### Client
