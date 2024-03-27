@@ -9,8 +9,8 @@ export interface HubContract {
         proposalVotes(proposalId: string): { call(): Promise<ProposalVoteResult> };
         collectionFinished(proposalId: string): { call(): Promise<boolean> };
         collectionStarted(proposalId: string): { call(): Promise<boolean> };
-        spokeContracts(index: number): { call(): Promise<{ contractAddress: string; chainId: string }> };
-        spokeVotes(proposalId: string, contractAddress: string, chainIdExtractedNumber: string): { call(): Promise<{ initialized: boolean }> };
+        spokeContractsSnapshots(index: number): { call(): Promise<{ contractAddress: string; chainId: string }> };
+        spokeVotes(proposalId: string, contractAddress: string, chainIdExtractedNumber: string): { call(): Promise<{ initialized: boolean; }> };
     };
 }
 
