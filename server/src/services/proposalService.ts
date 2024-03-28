@@ -2,13 +2,12 @@ import { kv } from "@vercel/kv";
 
 import {hub, networks} from '../config/web3';
 import Web3 from 'web3';
-import HUB_ABI_JSON from '../governance-hub.json';
-import SPOKE_ABI_JSON from '../governance-spoke.json';
+import HUB_ABI_JSON from '@human-protocol/core/artifacts/contracts/governance/MetaHumanGovernor.sol/MetaHumanGovernor.json';
+import SPOKE_ABI_JSON from '@human-protocol/core/artifacts/contracts/governance/DAOSpokeContract.sol/DAOSpokeContract.json';
 import {replacer} from '../utils/replacer';
 import { HubContract, SpokeContract, ProposalVoteResult } from '../types/contracts';
-
-const hubContractABI = HUB_ABI_JSON;
-const spokeContractABI = SPOKE_ABI_JSON;
+const hubContractABI = HUB_ABI_JSON.abi;
+const spokeContractABI = SPOKE_ABI_JSON.abi;
 
 export const fetchProposalData = async (proposalId) => {
     const proposal = await kv.get(proposalId);
