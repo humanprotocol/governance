@@ -5,12 +5,12 @@ import { Contract } from '@ethersproject/contracts'
 import { keccak256 } from '@ethersproject/keccak256'
 import { TransactionResponse } from '@ethersproject/providers'
 import { toUtf8Bytes, toUtf8String, Utf8ErrorFuncs, Utf8ErrorReason } from '@ethersproject/strings'
+import GOVERNOR_SPOKE_ABI from '@human-protocol/core/artifacts/contracts/governance/DAOSpokeContract.sol/DAOSpokeContract.json'
+import GOVERNOR_HUB_ABI from '@human-protocol/core/artifacts/contracts/governance/MetaHumanGovernor.sol/MetaHumanGovernor.json'
 // eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
 import { BigintIsh, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
-import GOVERNOR_HUB_ABI from '@human-protocol/core/artifacts/contracts/governance/MetaHumanGovernor.sol/MetaHumanGovernor.json';
-import GOVERNOR_SPOKE_ABI from '@human-protocol/core/artifacts/contracts/governance/DAOSpokeContract.sol/DAOSpokeContract.json';
 import HmtUniJSON from 'abis/HMToken.json'
 import UniJSON from 'abis/VHMToken.json'
 import { fetchVotes } from 'api/votes'
@@ -33,14 +33,9 @@ import { TransactionType } from '../transactions/types'
 import { VoteOption } from './types'
 
 function useGovernanceHubContract(): Contract | null {
-
   const { abi } = GOVERNOR_HUB_ABI
 
-  return useContractWithCustomProvider(
-    GOVERNANCE_HUB_ADDRESS,
-    abi,
-    RPC_PROVIDERS[HUB_CHAIN_ID as SupportedChainId]
-  )
+  return useContractWithCustomProvider(GOVERNANCE_HUB_ADDRESS, abi, RPC_PROVIDERS[HUB_CHAIN_ID as SupportedChainId])
 }
 
 function useGovernanceSpokeContract(): Contract | null {
@@ -143,7 +138,7 @@ export enum ProposalState {
   EXECUTED,
   COLLECTION_PHASE,
 }
-const GovernorAbi =  GOVERNOR_HUB_ABI.abi;
+const GovernorAbi = GOVERNOR_HUB_ABI.abi
 const GovernanceInterface = new Interface(GovernorAbi)
 
 interface FormattedProposalLog {

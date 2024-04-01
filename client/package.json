@@ -19,6 +19,7 @@
     "analyze": "source-map-explorer 'build/static/js/*.js' --only-mapped",
     "serve": "serve build -l 3000",
     "lint": "yarn eslint --ignore-path .gitignore --cache --cache-location node_modules/.cache/eslint/ .",
+    "lint:fix": "yarn eslint --ignore-path .gitignore --cache --cache-location node_modules/.cache/eslint/ . --fix",
     "typecheck": "tsc",
     "test": "craco test",
     "cypress:open": "cypress open --browser chrome --e2e",
@@ -63,6 +64,7 @@
   "devDependencies": {
     "@craco/craco": "^7.1.0",
     "@ethersproject/experimental": "^5.4.0",
+    "@human-protocol/core": "^2.1.0",
     "@lingui/cli": "^3.9.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1",
@@ -126,7 +128,6 @@
     "@cypress/code-coverage": "^3.10.0",
     "@fontsource/ibm-plex-mono": "^4.5.1",
     "@fontsource/inter": "^4.5.1",
-    "@human-protocol/core": "^2.1.0",
     "@juggle/resize-observer": "^3.4.0",
     "@lingui/core": "^3.14.0",
     "@lingui/macro": "^3.14.0",

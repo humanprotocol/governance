@@ -6,6 +6,15 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir')
 rulesDirPlugin.RULES_DIR = 'eslint_rules'
 
 module.exports = {
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+      },
+    },
+    node: true,
+    alias: true,
+  },
   extends: ['@uniswap/eslint-config/react'],
   plugins: ['rulesdir'],
   overrides: [
@@ -19,7 +28,7 @@ module.exports = {
     {
       // Configuration/typings typically export objects/definitions that are used outside of the transpiled package
       // (eg not captured by the tsconfig). Because it's typical and not exceptional, this is turned off entirely.
-      files: ['**/*.config.*', '**/*.d.ts'],
+      files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
       rules: {
         'import/no-unused-modules': 'off',
       },
