@@ -89,7 +89,7 @@ Response:
 "abstain": 300
 },
 {
-"chain_name": "mumbai",
+"chain_name": "amoy",
 "for": 100,
 "against": 200,
 "abstain": 300

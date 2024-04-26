@@ -8,7 +8,7 @@
  */
 export enum SupportedChainId {
   POLYGON = 137,
-  POLYGON_MUMBAI = 80001,
+  POLYGON_AMOY = 80002,
   ETHEREUM = 1,
   GOERLI = 5,
   BNB = 56,
@@ -32,7 +32,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.ETHEREUM]: 'ethereum',
   [SupportedChainId.GOERLI]: 'goerli',
   [SupportedChainId.POLYGON]: 'polygon',
-  [SupportedChainId.POLYGON_MUMBAI]: 'polygon_mumbai',
+  [SupportedChainId.POLYGON_AMOY]: 'polygon_amoy',
   [SupportedChainId.CELO]: 'celo',
   [SupportedChainId.CELO_ALFAJORES]: 'celo_alfajores',
   [SupportedChainId.ARBITRUM_ONE]: 'arbitrum',
@@ -57,7 +57,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.ETHEREUM,
   SupportedChainId.GOERLI,
   SupportedChainId.POLYGON,
-  SupportedChainId.POLYGON_MUMBAI,
+  SupportedChainId.POLYGON_AMOY,
   SupportedChainId.CELO,
   SupportedChainId.CELO_ALFAJORES,
   SupportedChainId.BNB,
@@ -85,6 +85,6 @@ export const L2_CHAIN_IDS = [
 
 export type SupportedL2ChainId = typeof L2_CHAIN_IDS[number]
 
-export function isPolygonChain(chainId: number): chainId is SupportedChainId.POLYGON | SupportedChainId.POLYGON_MUMBAI {
-  return chainId === SupportedChainId.POLYGON || chainId === SupportedChainId.POLYGON_MUMBAI
+export function isPolygonChain(chainId: number): chainId is SupportedChainId.POLYGON | SupportedChainId.POLYGON_AMOY {
+  return chainId === SupportedChainId.POLYGON || chainId === SupportedChainId.POLYGON_AMOY
 }

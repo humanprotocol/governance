@@ -23,9 +23,9 @@ Accessibility features are integrated to ensure that all users, regardless of th
  ## Contracts 
 
 >[!NOTE]
->MUMBAI is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
+>AMOY is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
 
-#### Mumbai (Hub) 
+#### AMOY (Hub) 
 
 - [HMT - Token](https://mumbai.polygonscan.com/address/0x076CCe4311997Dd6B370ff9b6407786eB0e33d60#code)
 - [vHMT - vote Token](https://mumbai.polygonscan.com/address/0x700cfdf6703BC6B079f0dEB2D979917C63046024#code)

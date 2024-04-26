@@ -43,9 +43,9 @@ export const FALLBACK_URLS = {
     'https://rpc-mainnet.matic.quiknode.pro',
     'https://matic-mainnet-full-rpc.bwarelabs.com',
   ],
-  [SupportedChainId.POLYGON_MUMBAI]: [
+  [SupportedChainId.POLYGON_AMOY]: [
     // "Safe" URLs
-    'https://rpc-mumbai.maticvigil.com',
+    'https://rpc-amoy.polygon.technology',
     'https://matic-testnet-archive-rpc.bwarelabs.com',
   ],
   [SupportedChainId.ARBITRUM_ONE]: [

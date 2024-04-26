@@ -61,9 +61,9 @@ export const USDC_POLYGON = new Token(
   'USDC',
   'USD//C'
 )
-const USDC_POLYGON_MUMBAI = new Token(
-  SupportedChainId.POLYGON_MUMBAI,
-  '0xe11a86849d99f524cac3e7a0ec1241828e332c62',
+const USDC_POLYGON_AMOY = new Token(
+  SupportedChainId.POLYGON_AMOY,
+  '0x792abbcC99c01dbDec49c9fa9A828a186Da45C33',
   6,
   'USDC',
   'USD//C'
@@ -367,9 +367,9 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
     'WMATIC',
     'Wrapped MATIC'
   ),
-  [SupportedChainId.POLYGON_MUMBAI]: new Token(
-    SupportedChainId.POLYGON_MUMBAI,
-    '0x9c3C9283D3e44854697Cd22D3Faa240Cfb032889',
+  [SupportedChainId.POLYGON_AMOY]: new Token(
+    SupportedChainId.POLYGON_AMOY,
+    '0x792abbcC99c01dbDec49c9fa9A828a186Da45C33',
     18,
     'MATIC',
     'Wrapped MATIC'
@@ -397,8 +397,8 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId: number]: Token | undefined } =
   ),
 }
 
-function isMatic(chainId: number): chainId is SupportedChainId.POLYGON | SupportedChainId.POLYGON_MUMBAI {
-  return chainId === SupportedChainId.POLYGON_MUMBAI || chainId === SupportedChainId.POLYGON
+function isMatic(chainId: number): chainId is SupportedChainId.POLYGON | SupportedChainId.POLYGON_AMOY {
+  return chainId === SupportedChainId.POLYGON_AMOY || chainId === SupportedChainId.POLYGON
 }
 
 class MaticNativeCurrency extends NativeCurrency {
@@ -481,7 +481,7 @@ export const TOKEN_SHORTHANDS: { [shorthand: string]: { [chainId in SupportedCha
     [SupportedChainId.OPTIMISM]: USDC_OPTIMISM.address,
     [SupportedChainId.OPTIMISM_GOERLI]: USDC_OPTIMISM_GOERLI.address,
     [SupportedChainId.POLYGON]: USDC_POLYGON.address,
-    [SupportedChainId.POLYGON_MUMBAI]: USDC_POLYGON_MUMBAI.address,
+    [SupportedChainId.POLYGON_AMOY]: USDC_POLYGON_AMOY.address,
     [SupportedChainId.BNB]: USDC_BSC.address,
     [SupportedChainId.CELO]: PORTAL_USDC_CELO.address,
     [SupportedChainId.CELO_ALFAJORES]: PORTAL_USDC_CELO.address,

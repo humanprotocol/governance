@@ -31,7 +31,7 @@ export function chainIdToNetworkName(networkId: SupportedChainId): Network {
 export function getNativeLogoURI(chainId: SupportedChainId = SupportedChainId.ETHEREUM): string {
   switch (chainId) {
     case SupportedChainId.POLYGON:
-    case SupportedChainId.POLYGON_MUMBAI:
+    case SupportedChainId.POLYGON_AMOY:
       return MaticLogo
     case SupportedChainId.BNB:
       return BnbLogo

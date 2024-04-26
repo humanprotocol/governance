@@ -145,14 +145,14 @@ const CHAIN_INFO: ChainInfoMap = {
     color: darkTheme.chain_137,
     backgroundColor: darkTheme.chain_137_background,
   },
-  [SupportedChainId.POLYGON_MUMBAI]: {
+  [SupportedChainId.POLYGON_AMOY]: {
     networkType: NetworkType.L1,
     blockWaitMsBeforeWarning: ms`10m`,
     docs: 'https://polygon.io/',
-    explorer: 'https://mumbai.polygonscan.com/',
-    label: 'Mumbai',
+    explorer: 'https://amoy.polygonscan.com/',
+    label: 'Amoy',
     logoUrl: polygonMaticLogo,
-    nativeCurrency: { name: 'Polygon Mumbai Matic', symbol: 'MATIC', decimals: 18 },
+    nativeCurrency: { name: 'Polygon Amoy Matic', symbol: 'MATIC', decimals: 18 },
   },
   [SupportedChainId.CELO]: {
     networkType: NetworkType.L1,
