@@ -4,7 +4,7 @@ import styled from 'styled-components/macro'
 import { useIsDarkMode } from 'theme/components/ThemeToggle'
 import { flexColumnNoWrap } from 'theme/styles'
 
-import Identicon from '../Identicon'
+import Identicon from '.'
 
 export const IconWrapper = styled.div<{ size?: number }>`
   position: relative;

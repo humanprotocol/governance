@@ -9,7 +9,7 @@ import { Column, ColumnInstance, HeaderGroup, IdType, useSortBy, useTable } from
 import styled, { useTheme } from 'styled-components/macro'
 import { GlowEffect, ThemedText } from 'theme'
 
-import { Box } from '../../components/Box'
+import { Box } from '../Box'
 import { CollectionTableColumn } from '../../types'
 import { ArrowRightIcon } from '../icons'
 import { ColumnHeaders } from './CollectionTable'
