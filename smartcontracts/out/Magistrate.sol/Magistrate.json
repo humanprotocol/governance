@@ -1,0 +1,1370 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousMagistrate",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newMagistrate",
+          "type": "address"
+        }
+      ],
+      "name": "MagistrateChanged",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "magistrate",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newMagistrate",
+          "type": "address"
+        }
+      ],
+      "name": "transferMagistrate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "deployedBytecode": {
+    "object": "0x",
+    "sourceMap": "",
+    "linkReferences": {}
+  },
+  "methodIdentifiers": {
+    "magistrate()": "45e6efa1",
+    "transferMagistrate(address)": "34feb318"
+  },
+  "rawMetadata": "{\"compiler\":{\"version\":\"0.8.21+commit.d9974bed\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousMagistrate\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newMagistrate\",\"type\":\"address\"}],\"name\":\"MagistrateChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"magistrate\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newMagistrate\",\"type\":\"address\"}],\"name\":\"transferMagistrate\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"This contract is based on OpenZeppelin's access/Ownable.sol contract. The only thing changed is the removal of `renounceOwnership()` function and name of the variables.\",\"kind\":\"dev\",\"methods\":{\"constructor\":{\"details\":\"Initializes the contract setting the provided address as the initial magistrate.\"},\"magistrate()\":{\"details\":\"Returns the address of the current magistrate.\"},\"transferMagistrate(address)\":{\"details\":\"Transfers magistrate of the contract to a new account (`newMagistrate`). Can only be called by the current magistrate.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/magistrate/Magistrate.sol\":\"Magistrate\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[\":@openzeppelin/=lib/openzeppelin-contracts/\",\":ds-test/=lib/forge-std/lib/ds-test/src/\",\":forge-std/=lib/forge-std/src/\",\":openzeppelin-contracts/=lib/openzeppelin-contracts/\"]},\"sources\":{\"lib/openzeppelin-contracts/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"src/magistrate/Magistrate.sol\":{\"keccak256\":\"0x085af7a8ff7f61fefbd0fe42b16f0af6d1f797ea33d8dd3a117e317de2c12aab\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2d50420985e7ad2d3d2548de55cc1a8f759e2dadcc98cafea57a05e1ece1fc9b\",\"dweb:/ipfs/QmUhozZeJg5N5waUDMP1vifcVk8Ds5AbFRPNZQsexdLNBy\"]}},\"version\":1}",
+  "metadata": {
+    "compiler": {
+      "version": "0.8.21+commit.d9974bed"
+    },
+    "language": "Solidity",
+    "output": {
+      "abi": [
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "previousMagistrate",
+              "type": "address",
+              "indexed": true
+            },
+            {
+              "internalType": "address",
+              "name": "newMagistrate",
+              "type": "address",
+              "indexed": true
+            }
+          ],
+          "type": "event",
+          "name": "MagistrateChanged",
+          "anonymous": false
+        },
+        {
+          "inputs": [],
+          "stateMutability": "view",
+          "type": "function",
+          "name": "magistrate",
+          "outputs": [
+            {
+              "internalType": "address",
+              "name": "",
+              "type": "address"
+            }
+          ]
+        },
+        {
+          "inputs": [
+            {
+              "internalType": "address",
+              "name": "newMagistrate",
+              "type": "address"
+            }
+          ],
+          "stateMutability": "nonpayable",
+          "type": "function",
+          "name": "transferMagistrate"
+        }
+      ],
+      "devdoc": {
+        "kind": "dev",
+        "methods": {
+          "constructor": {
+            "details": "Initializes the contract setting the provided address as the initial magistrate."
+          },
+          "magistrate()": {
+            "details": "Returns the address of the current magistrate."
+          },
+          "transferMagistrate(address)": {
+            "details": "Transfers magistrate of the contract to a new account (`newMagistrate`). Can only be called by the current magistrate."
+          }
+        },
+        "version": 1
+      },
+      "userdoc": {
+        "kind": "user",
+        "methods": {},
+        "version": 1
+      }
+    },
+    "settings": {
+      "remappings": [
+        "@openzeppelin/=lib/openzeppelin-contracts/",
+        "ds-test/=lib/forge-std/lib/ds-test/src/",
+        "forge-std/=lib/forge-std/src/",
+        "openzeppelin-contracts/=lib/openzeppelin-contracts/"
+      ],
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "metadata": {
+        "bytecodeHash": "ipfs"
+      },
+      "compilationTarget": {
+        "src/magistrate/Magistrate.sol": "Magistrate"
+      },
+      "libraries": {}
+    },
+    "sources": {
+      "lib/openzeppelin-contracts/contracts/utils/Context.sol": {
+        "keccak256": "0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7",
+        "urls": [
+          "bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92",
+          "dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
+        ],
+        "license": "MIT"
+      },
+      "src/magistrate/Magistrate.sol": {
+        "keccak256": "0x085af7a8ff7f61fefbd0fe42b16f0af6d1f797ea33d8dd3a117e317de2c12aab",
+        "urls": [
+          "bzz-raw://2d50420985e7ad2d3d2548de55cc1a8f759e2dadcc98cafea57a05e1ece1fc9b",
+          "dweb:/ipfs/QmUhozZeJg5N5waUDMP1vifcVk8Ds5AbFRPNZQsexdLNBy"
+        ],
+        "license": "MIT"
+      }
+    },
+    "version": 1
+  },
+  "ast": {
+    "absolutePath": "src/magistrate/Magistrate.sol",
+    "id": 59846,
+    "exportedSymbols": {
+      "Context": [
+        50629
+      ],
+      "Magistrate": [
+        59845
+      ]
+    },
+    "nodeType": "SourceUnit",
+    "src": "33:1956:79",
+    "nodes": [
+      {
+        "id": 59747,
+        "nodeType": "PragmaDirective",
+        "src": "33:23:79",
+        "nodes": [],
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ]
+      },
+      {
+        "id": 59748,
+        "nodeType": "ImportDirective",
+        "src": "58:51:79",
+        "nodes": [],
+        "absolutePath": "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "file": "@openzeppelin/contracts/utils/Context.sol",
+        "nameLocation": "-1:-1:-1",
+        "scope": 59846,
+        "sourceUnit": 50630,
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "id": 59845,
+        "nodeType": "ContractDefinition",
+        "src": "299:1689:79",
+        "nodes": [
+          {
+            "id": 59753,
+            "nodeType": "VariableDeclaration",
+            "src": "345:27:79",
+            "nodes": [],
+            "constant": false,
+            "mutability": "mutable",
+            "name": "_magistrate",
+            "nameLocation": "361:11:79",
+            "scope": 59845,
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_address",
+              "typeString": "address"
+            },
+            "typeName": {
+              "id": 59752,
+              "name": "address",
+              "nodeType": "ElementaryTypeName",
+              "src": "345:7:79",
+              "stateMutability": "nonpayable",
+              "typeDescriptions": {
+                "typeIdentifier": "t_address",
+                "typeString": "address"
+              }
+            },
+            "visibility": "private"
+          },
+          {
+            "id": 59759,
+            "nodeType": "EventDefinition",
+            "src": "379:91:79",
+            "nodes": [],
+            "anonymous": false,
+            "eventSelector": "b4aa40c4569b1278aa7da5bab0f345910781d388f8257b0bec17a317e2efb6b5",
+            "name": "MagistrateChanged",
+            "nameLocation": "385:17:79",
+            "parameters": {
+              "id": 59758,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 59755,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "previousMagistrate",
+                  "nameLocation": "419:18:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 59759,
+                  "src": "403:34:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 59754,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "403:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 59757,
+                  "indexed": true,
+                  "mutability": "mutable",
+                  "name": "newMagistrate",
+                  "nameLocation": "455:13:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 59759,
+                  "src": "439:29:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 59756,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "439:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "402:67:79"
+            }
+          },
+          {
+            "id": 59770,
+            "nodeType": "FunctionDefinition",
+            "src": "585:82:79",
+            "nodes": [],
+            "body": {
+              "id": 59769,
+              "nodeType": "Block",
+              "src": "618:49:79",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 59766,
+                        "name": "magistrate_",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 59762,
+                        "src": "648:11:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "id": 59765,
+                      "name": "_transferMagistrate",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 59844,
+                      "src": "628:19:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$__$",
+                        "typeString": "function (address)"
+                      }
+                    },
+                    "id": 59767,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "628:32:79",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 59768,
+                  "nodeType": "ExpressionStatement",
+                  "src": "628:32:79"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 59760,
+              "nodeType": "StructuredDocumentation",
+              "src": "476:104:79",
+              "text": " @dev Initializes the contract setting the provided address as the initial magistrate."
+            },
+            "implemented": true,
+            "kind": "constructor",
+            "modifiers": [],
+            "name": "",
+            "nameLocation": "-1:-1:-1",
+            "parameters": {
+              "id": 59763,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 59762,
+                  "mutability": "mutable",
+                  "name": "magistrate_",
+                  "nameLocation": "605:11:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 59770,
+                  "src": "597:19:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 59761,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "597:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "596:21:79"
+            },
+            "returnParameters": {
+              "id": 59764,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "618:0:79"
+            },
+            "scope": 59845,
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "internal"
+          },
+          {
+            "id": 59778,
+            "nodeType": "ModifierDefinition",
+            "src": "760:72:79",
+            "nodes": [],
+            "body": {
+              "id": 59777,
+              "nodeType": "Block",
+              "src": "786:46:79",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [],
+                    "expression": {
+                      "argumentTypes": [],
+                      "id": 59773,
+                      "name": "_checkMagistrate",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 59801,
+                      "src": "796:16:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_view$__$returns$__$",
+                        "typeString": "function () view"
+                      }
+                    },
+                    "id": 59774,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "796:18:79",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 59775,
+                  "nodeType": "ExpressionStatement",
+                  "src": "796:18:79"
+                },
+                {
+                  "id": 59776,
+                  "nodeType": "PlaceholderStatement",
+                  "src": "824:1:79"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 59771,
+              "nodeType": "StructuredDocumentation",
+              "src": "673:82:79",
+              "text": " @dev Throws if called by any account other than the magistrate."
+            },
+            "name": "onlyMagistrate",
+            "nameLocation": "769:14:79",
+            "parameters": {
+              "id": 59772,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "783:2:79"
+            },
+            "virtual": false,
+            "visibility": "internal"
+          },
+          {
+            "id": 59787,
+            "nodeType": "FunctionDefinition",
+            "src": "913:95:79",
+            "nodes": [],
+            "body": {
+              "id": 59786,
+              "nodeType": "Block",
+              "src": "973:35:79",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "id": 59784,
+                    "name": "_magistrate",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 59753,
+                    "src": "990:11:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "functionReturnParameters": 59783,
+                  "id": 59785,
+                  "nodeType": "Return",
+                  "src": "983:18:79"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 59779,
+              "nodeType": "StructuredDocumentation",
+              "src": "838:70:79",
+              "text": " @dev Returns the address of the current magistrate."
+            },
+            "functionSelector": "45e6efa1",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "magistrate",
+            "nameLocation": "922:10:79",
+            "parameters": {
+              "id": 59780,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "932:2:79"
+            },
+            "returnParameters": {
+              "id": 59783,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 59782,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 59787,
+                  "src": "964:7:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 59781,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "964:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "963:9:79"
+            },
+            "scope": 59845,
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "id": 59801,
+            "nodeType": "FunctionDefinition",
+            "src": "1086:148:79",
+            "nodes": [],
+            "body": {
+              "id": 59800,
+              "nodeType": "Block",
+              "src": "1136:98:79",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "id": 59796,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "arguments": [],
+                          "expression": {
+                            "argumentTypes": [],
+                            "id": 59792,
+                            "name": "magistrate",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 59787,
+                            "src": "1154:10:79",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_internal_view$__$returns$_t_address_$",
+                              "typeString": "function () view returns (address)"
+                            }
+                          },
+                          "id": 59793,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "nameLocations": [],
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1154:12:79",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "arguments": [],
+                          "expression": {
+                            "argumentTypes": [],
+                            "id": 59794,
+                            "name": "_msgSender",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 50619,
+                            "src": "1170:10:79",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_internal_view$__$returns$_t_address_$",
+                              "typeString": "function () view returns (address)"
+                            }
+                          },
+                          "id": 59795,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "nameLocations": [],
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1170:12:79",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "src": "1154:28:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "4d6167697374726174653a2063616c6c6572206973206e6f7420746865206d616769737472617465",
+                        "id": 59797,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1184:42:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_44b294b3d3b1a2aba4b7644f6c26f2eca096072ec4460261051fe7e3b0375bee",
+                          "typeString": "literal_string \"Magistrate: caller is not the magistrate\""
+                        },
+                        "value": "Magistrate: caller is not the magistrate"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_44b294b3d3b1a2aba4b7644f6c26f2eca096072ec4460261051fe7e3b0375bee",
+                          "typeString": "literal_string \"Magistrate: caller is not the magistrate\""
+                        }
+                      ],
+                      "id": 59791,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        -18,
+                        -18
+                      ],
+                      "referencedDeclaration": -18,
+                      "src": "1146:7:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 59798,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1146:81:79",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 59799,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1146:81:79"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 59788,
+              "nodeType": "StructuredDocumentation",
+              "src": "1014:67:79",
+              "text": " @dev Throws if the sender is not the magistrate."
+            },
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "_checkMagistrate",
+            "nameLocation": "1095:16:79",
+            "parameters": {
+              "id": 59789,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1111:2:79"
+            },
+            "returnParameters": {
+              "id": 59790,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1136:0:79"
+            },
+            "scope": 59845,
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "internal"
+          },
+          {
+            "id": 59824,
+            "nodeType": "FunctionDefinition",
+            "src": "1394:228:79",
+            "nodes": [],
+            "body": {
+              "id": 59823,
+              "nodeType": "Block",
+              "src": "1475:147:79",
+              "nodes": [],
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "commonType": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        "id": 59815,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "id": 59810,
+                          "name": "newMagistrate",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 59804,
+                          "src": "1493:13:79",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "!=",
+                        "rightExpression": {
+                          "arguments": [
+                            {
+                              "hexValue": "30",
+                              "id": 59813,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "kind": "number",
+                              "lValueRequested": false,
+                              "nodeType": "Literal",
+                              "src": "1518:1:79",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              },
+                              "value": "0"
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_rational_0_by_1",
+                                "typeString": "int_const 0"
+                              }
+                            ],
+                            "id": 59812,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "lValueRequested": false,
+                            "nodeType": "ElementaryTypeNameExpression",
+                            "src": "1510:7:79",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_address_$",
+                              "typeString": "type(address)"
+                            },
+                            "typeName": {
+                              "id": 59811,
+                              "name": "address",
+                              "nodeType": "ElementaryTypeName",
+                              "src": "1510:7:79",
+                              "typeDescriptions": {}
+                            }
+                          },
+                          "id": 59814,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "kind": "typeConversion",
+                          "lValueRequested": false,
+                          "nameLocations": [],
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1510:10:79",
+                          "tryCall": false,
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_address",
+                            "typeString": "address"
+                          }
+                        },
+                        "src": "1493:27:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      {
+                        "hexValue": "4d6167697374726174653a206e6577206d61676973747261746520697320746865207a65726f2061646472657373",
+                        "id": 59816,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": true,
+                        "kind": "string",
+                        "lValueRequested": false,
+                        "nodeType": "Literal",
+                        "src": "1522:48:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_stringliteral_800087882cb5d1098eedcafb5367047a835c1fe5ad72763d7f11de57126dccee",
+                          "typeString": "literal_string \"Magistrate: new magistrate is the zero address\""
+                        },
+                        "value": "Magistrate: new magistrate is the zero address"
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        },
+                        {
+                          "typeIdentifier": "t_stringliteral_800087882cb5d1098eedcafb5367047a835c1fe5ad72763d7f11de57126dccee",
+                          "typeString": "literal_string \"Magistrate: new magistrate is the zero address\""
+                        }
+                      ],
+                      "id": 59809,
+                      "name": "require",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        -18,
+                        -18
+                      ],
+                      "referencedDeclaration": -18,
+                      "src": "1485:7:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_require_pure$_t_bool_$_t_string_memory_ptr_$returns$__$",
+                        "typeString": "function (bool,string memory) pure"
+                      }
+                    },
+                    "id": 59817,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1485:86:79",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 59818,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1485:86:79"
+                },
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 59820,
+                        "name": "newMagistrate",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 59804,
+                        "src": "1601:13:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "id": 59819,
+                      "name": "_transferMagistrate",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 59844,
+                      "src": "1581:19:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_address_$returns$__$",
+                        "typeString": "function (address)"
+                      }
+                    },
+                    "id": 59821,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1581:34:79",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 59822,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1581:34:79"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 59802,
+              "nodeType": "StructuredDocumentation",
+              "src": "1240:149:79",
+              "text": " @dev Transfers magistrate of the contract to a new account (`newMagistrate`).\n Can only be called by the current magistrate."
+            },
+            "functionSelector": "34feb318",
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "id": 59807,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 59806,
+                  "name": "onlyMagistrate",
+                  "nameLocations": [
+                    "1460:14:79"
+                  ],
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 59778,
+                  "src": "1460:14:79"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1460:14:79"
+              }
+            ],
+            "name": "transferMagistrate",
+            "nameLocation": "1403:18:79",
+            "parameters": {
+              "id": 59805,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 59804,
+                  "mutability": "mutable",
+                  "name": "newMagistrate",
+                  "nameLocation": "1430:13:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 59824,
+                  "src": "1422:21:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 59803,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1422:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1421:23:79"
+            },
+            "returnParameters": {
+              "id": 59808,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1475:0:79"
+            },
+            "scope": 59845,
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "id": 59844,
+            "nodeType": "FunctionDefinition",
+            "src": "1766:220:79",
+            "nodes": [],
+            "body": {
+              "id": 59843,
+              "nodeType": "Block",
+              "src": "1835:151:79",
+              "nodes": [],
+              "statements": [
+                {
+                  "assignments": [
+                    59831
+                  ],
+                  "declarations": [
+                    {
+                      "constant": false,
+                      "id": 59831,
+                      "mutability": "mutable",
+                      "name": "oldMagistrate",
+                      "nameLocation": "1853:13:79",
+                      "nodeType": "VariableDeclaration",
+                      "scope": 59843,
+                      "src": "1845:21:79",
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      },
+                      "typeName": {
+                        "id": 59830,
+                        "name": "address",
+                        "nodeType": "ElementaryTypeName",
+                        "src": "1845:7:79",
+                        "stateMutability": "nonpayable",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      "visibility": "internal"
+                    }
+                  ],
+                  "id": 59833,
+                  "initialValue": {
+                    "id": 59832,
+                    "name": "_magistrate",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 59753,
+                    "src": "1869:11:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "nodeType": "VariableDeclarationStatement",
+                  "src": "1845:35:79"
+                },
+                {
+                  "expression": {
+                    "id": 59836,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "id": 59834,
+                      "name": "_magistrate",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 59753,
+                      "src": "1890:11:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "id": 59835,
+                      "name": "newMagistrate",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 59827,
+                      "src": "1904:13:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "src": "1890:27:79",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 59837,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1890:27:79"
+                },
+                {
+                  "eventCall": {
+                    "arguments": [
+                      {
+                        "id": 59839,
+                        "name": "oldMagistrate",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 59831,
+                        "src": "1950:13:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "id": 59840,
+                        "name": "newMagistrate",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 59827,
+                        "src": "1965:13:79",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "id": 59838,
+                      "name": "MagistrateChanged",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 59759,
+                      "src": "1932:17:79",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_address_$_t_address_$returns$__$",
+                        "typeString": "function (address,address)"
+                      }
+                    },
+                    "id": 59841,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "nameLocations": [],
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1932:47:79",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 59842,
+                  "nodeType": "EmitStatement",
+                  "src": "1927:52:79"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 59825,
+              "nodeType": "StructuredDocumentation",
+              "src": "1628:133:79",
+              "text": " @dev Transfers magistrate to a new account (`newMagistrate`).\n Internal function without access restriction."
+            },
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "_transferMagistrate",
+            "nameLocation": "1775:19:79",
+            "parameters": {
+              "id": 59828,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 59827,
+                  "mutability": "mutable",
+                  "name": "newMagistrate",
+                  "nameLocation": "1803:13:79",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 59844,
+                  "src": "1795:21:79",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 59826,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1795:7:79",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1794:23:79"
+            },
+            "returnParameters": {
+              "id": 59829,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1835:0:79"
+            },
+            "scope": 59845,
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "internal"
+          }
+        ],
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 59750,
+              "name": "Context",
+              "nameLocations": [
+                "331:7:79"
+              ],
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 50629,
+              "src": "331:7:79"
+            },
+            "id": 59751,
+            "nodeType": "InheritanceSpecifier",
+            "src": "331:7:79"
+          }
+        ],
+        "canonicalName": "Magistrate",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 59749,
+          "nodeType": "StructuredDocumentation",
+          "src": "111:187:79",
+          "text": " @dev This contract is based on OpenZeppelin's access/Ownable.sol contract.\n The only thing changed is the removal of `renounceOwnership()` function and name of the variables."
+        },
+        "fullyImplemented": true,
+        "linearizedBaseContracts": [
+          59845,
+          50629
+        ],
+        "name": "Magistrate",
+        "nameLocation": "317:10:79",
+        "scope": 59846,
+        "usedErrors": [],
+        "usedEvents": [
+          59759
+        ]
+      }
+    ],
+    "license": "MIT"
+  },
+  "id": 79
+}
