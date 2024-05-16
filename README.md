@@ -23,7 +23,7 @@ Accessibility features are integrated to ensure that all users, regardless of th
  ## Contracts 
 
 >[!NOTE]
->MUMBAI is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
+>SEPOLIA is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
 
 #### Mumbai (Hub) 
 
