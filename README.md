@@ -29,13 +29,13 @@ Accessibility features are integrated to ensure that all users, regardless of th
 
 - [HMT - Token](https://sepolia.etherscan.io/address/0xC021cFE4fDe075E8038217B1911CB0D9406B8A29#code)
 - [vHMT - vote Token](https://sepolia.etherscan.io/address/0x0e73FF0E924cd51819C1ACFe160C41904DF5E70A#code)
-- [TimelockController]()
-- [Governor]()
+- [TimelockController](https://sepolia.etherscan.io/address/0x2FB7aB8BcE514B8fE0c3e166A6cF0649823c4BAd#code)
+- [Governor](https://sepolia.etherscan.io/address/0x3a2cc67a910F543E98Bed7F96e4CAC62651416C7#code)
 
-#### Avalanche (Spoke)
-- [HMT - Token](https://testnet.snowtrace.io/address/0xB58f8eA7916501E80CfC848165c92E4Cc34511fF/contract/43113/code)
-- [vHMT - vote Token](https://testnet.snowtrace.io/address/0xD804Fe2e52180C6A38d7BdFeB5163b2D40BE958E/contract/43113/code) 
-- [Dao Spoke](https://testnet.snowtrace.io/address/0xcAd4C61fC7F600D2786bf9CE0c21C9a502ba9814/contract/43113/code)
+#### Avalanche Fuji (Spoke)
+- [HMT - Token](https://testnet.snowtrace.io/address/0xE7DBF0BA39572593769D4273f93d39BdA56df101)
+- [vHMT - vote Token](https://testnet.snowtrace.io/address/0x6afbD41dC1C1cd2AF2c55eD2d98A386C18aC2dfd) 
+- [Dao Spoke](https://testnet.snowtrace.io/address/0x907F05C4B0E19E316b9b28baC9DDf5E6490057c8/contract/43113/code)
 
 
 ### Verification process 
