@@ -25,7 +25,7 @@ Accessibility features are integrated to ensure that all users, regardless of th
 >[!NOTE]
 >SEPOLIA is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
 
-#### Mumbai (Hub) 
+#### Sepolia (Hub) 
 
 - [HMT - Token](https://sepolia.etherscan.io/address/0xC021cFE4fDe075E8038217B1911CB0D9406B8A29#code)
 - [vHMT - vote Token](https://sepolia.etherscan.io/address/0x0e73FF0E924cd51819C1ACFe160C41904DF5E70A#code)
