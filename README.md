@@ -25,7 +25,7 @@ Accessibility features are integrated to ensure that all users, regardless of th
 >[!NOTE]
 >SEPOLIA is the HUB CHAIN and AVALANCHE is the SPOKE CHAIN  
 
-#### Mumbai (Hub) 
+#### Sepolia (Hub) 
 
 - [HMT - Token](https://sepolia.etherscan.io/address/0xC021cFE4fDe075E8038217B1911CB0D9406B8A29#code)
 - [vHMT - vote Token](https://sepolia.etherscan.io/address/0x0e73FF0E924cd51819C1ACFe160C41904DF5E70A#code)
@@ -40,10 +40,10 @@ Accessibility features are integrated to ensure that all users, regardless of th
 
 ### Verification process 
 
-- ```npx hardhat verify --network polygonMumbai <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' ```
-- ```npx hardhat verify --network polygonMumbai <vHMT_ADDRESS> <HMT_ADDRESS> ```
-- ```npx hardhat verify --network polygonMumbai --constructor-args arguments.js <TIMELOCK_CONTROLLER_ADDRESS> ```
-- ```npx hardhat verify --network polygonMumbai --constructor-args arguments.js <GOVERNOR_ADDRESS> ```
+- ```npx hardhat verify --network sepolia <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' ```
+- ```npx hardhat verify --network sepolia <vHMT_ADDRESS> <HMT_ADDRESS> ```
+- ```npx hardhat verify --network sepolia --constructor-args arguments.js <TIMELOCK_CONTROLLER_ADDRESS> ```
+- ```npx hardhat verify --network sepolia --constructor-args arguments.js <GOVERNOR_ADDRESS> ```
 - ```npx hardhat verify --network avalancheFujiTestnet <HMT_ADDRESS> 1000000000 'Human Token' 18 'HMT' ```
 - ```npx hardhat verify --network avalancheFujiTestnet <vHMT_ADDRESS> <HMT_ADDRESS>```
 
