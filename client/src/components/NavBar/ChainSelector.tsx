@@ -23,7 +23,12 @@ import * as styles from './ChainSelector.css'
 import ChainSelectorRow from './ChainSelectorRow'
 import { NavDropdown } from './NavDropdown'
 
-const NETWORK_SELECTOR_CHAINS = [HUB_CHAIN_ID, ...Object.keys(GOVERNANCE_SPOKE_ADRESSES).map(Number)]
+const NETWORK_SELECTOR_CHAINS = [
+  HUB_CHAIN_ID,
+  ...Object.keys(GOVERNANCE_SPOKE_ADRESSES)
+    .map(Number)
+    .filter((chainId) => chainId !== HUB_CHAIN_ID),
+]
 
 interface ChainSelectorProps {
   leftAlign?: boolean
