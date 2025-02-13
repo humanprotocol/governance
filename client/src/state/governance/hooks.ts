@@ -197,7 +197,7 @@ function useFormattedProposalCreatedLogs(
       ?.map((parsed) => {
         let description!: string
 
-        const startBlock = parseInt(parsed.startBlock?.toString())
+        const startBlock = parseInt(parsed.voteStart?.toString())
         try {
           description = parsed.description
         } catch (error) {
@@ -263,7 +263,7 @@ function useFormattedProposalCreatedLogs(
 
           proposer,
           startBlock,
-          endBlock: parsed.endBlock,
+          endBlock: parseInt(parsed.voteEnd?.toString()),
           targets: parsed.targets,
           values: parsed[3],
           //BLOCKYTODO: values hardcoded because there's a known problem with the abi. Link: https://github.com/ethers-io/ethers.js/issues/3744
