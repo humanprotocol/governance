@@ -5,8 +5,16 @@ import proposalRoutes from './routes/proposalRoutes';
 
 const app = express();
 const port = process.env.NODE_PORT || 8080;
+const allowedOrigin = process.env.ALLOWED_CORS_ORIGIN || '*';
+
 const corsOptions = {
-    origin: process.env.ALLOWED_CORS_ORIGIN || '*',
+    origin: (origin, callback) => {
+        if (!origin || origin === allowedOrigin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
 };
 
 app.use(cors(corsOptions));
