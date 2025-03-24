@@ -12,7 +12,7 @@ import { useTokenBalance } from 'lib/hooks/useCurrencyBalance'
 import { Box } from 'nft/components/Box'
 import { WarningCircleIcon } from 'nft/components/icons'
 import VotingButtons from 'pages/Vote/VotingButtons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 import ReactMarkdown from 'react-markdown'
 import { useParams } from 'react-router-dom'
@@ -323,6 +323,36 @@ export default function VotePage() {
     uniBalance && JSBI.notEqual(uniBalance.quotient, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
+  const [isUrl, setIsUrl] = useState(false)
+  const [markdownContent, setMarkdownContent] = useState<string | null>(null)
+
+  useEffect(() => {
+    const checkAndFetchMarkdown = async () => {
+      const description = proposalData?.description
+      if (description) {
+        try {
+          const url = new URL(description)
+          setIsUrl(true)
+
+          const response = await fetch(url.toString())
+          if (response.ok) {
+            // Read the file content as text
+            const fileContent = await response.text()
+            setMarkdownContent(fileContent) // Store the content for rendering
+          } else {
+            console.error('Failed to fetch file from URL:', response.statusText)
+          }
+        } catch {
+          setIsUrl(false)
+        }
+      }
+    }
+
+    if (proposalData?.description) {
+      checkAndFetchMarkdown()
+    }
+  }, [proposalData?.description])
+
   // show links in propsoal details if content is an address
   // if content is contract with common name, replace address with common name
   const linkIfAddress = (content: string) => {
@@ -534,12 +564,16 @@ export default function VotePage() {
               <Trans>Description</Trans>
             </ThemedText.SubHeaderLarge>
             <MarkDownWrapper>
-              <ReactMarkdown
-                source={proposalData?.description}
-                renderers={{
-                  image: MarkdownImage,
-                }}
-              />
+              {isUrl && markdownContent ? (
+                <ReactMarkdown source={markdownContent} />
+              ) : (
+                <ReactMarkdown
+                  source={proposalData?.description}
+                  renderers={{
+                    image: MarkdownImage,
+                  }}
+                />
+              )}
             </MarkDownWrapper>
           </AutoColumn>
           <AutoColumn gap="md">
