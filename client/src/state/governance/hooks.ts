@@ -359,8 +359,16 @@ export function useAllProposalData(): { data: ProposalData[]; loading: boolean }
         const startBlock = parseInt(proposal.startBlock?.toString())
 
         const description = formattedLogs[i]?.description ?? ''
-
-        const title = description?.split(/#+\s|\n/g)[1]
+        let title: string
+        let desc: string
+        if (description.includes('[[')) {
+          const urlMatch = description.match(/\[\[(.*?)\]\]/)
+          title = description.replace(/\[\[(.*?)\]\]/, '').trim()
+          desc = urlMatch ? urlMatch[1].trim() : ''
+        } else {
+          title = description?.split(/#+\s|\n/g)[1] || t`Untitled`
+          desc = description
+        }
 
         const forVotes = proposalHubVotes[i]?.forVotes || 0
         const againstVotes = proposalHubVotes[i]?.againstVotes || 0
@@ -373,7 +381,7 @@ export function useAllProposalData(): { data: ProposalData[]; loading: boolean }
         return {
           id: proposal.id.toString(),
           title: title ?? t`Untitled`,
-          description: description ?? t`No description.`,
+          description: desc ?? t`No description.`,
           proposer: proposal.proposer,
           status: proposalStatuses[i] ?? ProposalState.UNDETERMINED,
           hubForCount: CurrencyAmount.fromRawAmount(uniToken, forVotes),

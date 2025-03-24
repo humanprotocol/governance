@@ -12,7 +12,7 @@ import { useTokenBalance } from 'lib/hooks/useCurrencyBalance'
 import { Box } from 'nft/components/Box'
 import { WarningCircleIcon } from 'nft/components/icons'
 import VotingButtons from 'pages/Vote/VotingButtons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 import ReactMarkdown from 'react-markdown'
 import { useParams } from 'react-router-dom'
@@ -323,6 +323,40 @@ export default function VotePage() {
     uniBalance && JSBI.notEqual(uniBalance.quotient, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
+  const [markdownContent, setMarkdownContent] = useState<string | undefined>(undefined)
+
+  useEffect(() => {
+    const checkAndFetchMarkdown = async () => {
+      const description = proposalData?.description
+      if (description) {
+        try {
+          const url = new URL(description)
+          // Check if the URL ends with `.md`
+          if (url.pathname.endsWith('.md')) {
+            // Fetch the Markdown file
+            const response = await fetch(url.toString())
+            if (response.ok) {
+              const fileContent = await response.text()
+              setMarkdownContent(fileContent) // Store the content for rendering
+            } else {
+              console.error('Failed to fetch file from URL:', response.statusText)
+            }
+          } else {
+            // If not an `.md` file, treat it as plain text or fallback
+            setMarkdownContent(description)
+          }
+        } catch (e) {
+          console.error('Error processing description:', e)
+          setMarkdownContent(description) // Fallback to plain text
+        }
+      }
+    }
+
+    if (proposalData?.description) {
+      checkAndFetchMarkdown()
+    }
+  }, [proposalData?.description])
+
   // show links in propsoal details if content is an address
   // if content is contract with common name, replace address with common name
   const linkIfAddress = (content: string) => {
@@ -535,7 +569,7 @@ export default function VotePage() {
             </ThemedText.SubHeaderLarge>
             <MarkDownWrapper>
               <ReactMarkdown
-                source={proposalData?.description}
+                source={markdownContent}
                 renderers={{
                   image: MarkdownImage,
                 }}
