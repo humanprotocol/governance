@@ -323,8 +323,7 @@ export default function VotePage() {
     uniBalance && JSBI.notEqual(uniBalance.quotient, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
-  const [isUrl, setIsUrl] = useState(false)
-  const [markdownContent, setMarkdownContent] = useState<string | null>(null)
+  const [markdownContent, setMarkdownContent] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     const checkAndFetchMarkdown = async () => {
@@ -332,18 +331,23 @@ export default function VotePage() {
       if (description) {
         try {
           const url = new URL(description)
-          setIsUrl(true)
-
-          const response = await fetch(url.toString())
-          if (response.ok) {
-            // Read the file content as text
-            const fileContent = await response.text()
-            setMarkdownContent(fileContent) // Store the content for rendering
+          // Check if the URL ends with `.md`
+          if (url.pathname.endsWith('.md')) {
+            // Fetch the Markdown file
+            const response = await fetch(url.toString())
+            if (response.ok) {
+              const fileContent = await response.text()
+              setMarkdownContent(fileContent) // Store the content for rendering
+            } else {
+              console.error('Failed to fetch file from URL:', response.statusText)
+            }
           } else {
-            console.error('Failed to fetch file from URL:', response.statusText)
+            // If not an `.md` file, treat it as plain text or fallback
+            setMarkdownContent(description)
           }
-        } catch {
-          setIsUrl(false)
+        } catch (e) {
+          console.error('Error processing description:', e)
+          setMarkdownContent(description) // Fallback to plain text
         }
       }
     }
@@ -564,16 +568,12 @@ export default function VotePage() {
               <Trans>Description</Trans>
             </ThemedText.SubHeaderLarge>
             <MarkDownWrapper>
-              {isUrl && markdownContent ? (
-                <ReactMarkdown source={markdownContent} />
-              ) : (
-                <ReactMarkdown
-                  source={proposalData?.description}
-                  renderers={{
-                    image: MarkdownImage,
-                  }}
-                />
-              )}
+              <ReactMarkdown
+                source={markdownContent}
+                renderers={{
+                  image: MarkdownImage,
+                }}
+              />
             </MarkDownWrapper>
           </AutoColumn>
           <AutoColumn gap="md">
