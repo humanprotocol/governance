@@ -12,7 +12,7 @@ const corsOptions = {
         if (!origin || origin === allowedOrigin) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error(`Not allowed by CORS for ${origin}`));
         }
     },
 };
