@@ -543,31 +543,27 @@ export default function VotePage() {
               </CardSection>
             </StyledDataCard>
           </CardWrapper>
-          <AutoColumn gap="16px">
-            {proposalData?.details?.some((d) => d.target !== ZERO_ADDRESS) && (
-              <>
-                <ThemedText.SubHeaderLarge>
-                  <Trans>Details</Trans>
-                </ThemedText.SubHeaderLarge>
-                {proposalData?.details?.map((d, i) => {
-                  return (
-                    <DetailText key={i}>
-                      {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
-                      {d.callData.split(',').map((content, i) => {
-                        return (
-                          <span key={i}>
-                            {linkIfAddress(content)}
-                            {d.callData.split(',').length - 1 === i ? '' : ','}
-                          </span>
-                        )
-                      })}
-                      )
-                    </DetailText>
+          {/* <AutoColumn gap="16px">
+            <ThemedText.SubHeaderLarge>
+              <Trans>Details</Trans>
+            </ThemedText.SubHeaderLarge>
+            {proposalData?.details?.map((d, i) => {
+              return (
+                <DetailText key={i}>
+                  {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
+                  {d.callData.split(',').map((content, i) => {
+                    return (
+                      <span key={i}>
+                        {linkIfAddress(content)}
+                        {d.callData.split(',').length - 1 === i ? '' : ','}
+                      </span>
+                    )
+                  })}
                   )
-                })}
-              </>
-            )}
-          </AutoColumn>
+                </DetailText>
+              )
+            })}
+          </AutoColumn> */}
           <AutoColumn gap="md">
             <ThemedText.SubHeaderLarge>
               <Trans>Description</Trans>
