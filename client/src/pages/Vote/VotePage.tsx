@@ -544,25 +544,29 @@ export default function VotePage() {
             </StyledDataCard>
           </CardWrapper>
           <AutoColumn gap="16px">
-            <ThemedText.SubHeaderLarge>
-              <Trans>Details</Trans>
-            </ThemedText.SubHeaderLarge>
-            {proposalData?.details?.map((d, i) => {
-              return (
-                <DetailText key={i}>
-                  {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
-                  {d.callData.split(',').map((content, i) => {
-                    return (
-                      <span key={i}>
-                        {linkIfAddress(content)}
-                        {d.callData.split(',').length - 1 === i ? '' : ','}
-                      </span>
-                    )
-                  })}
+            {proposalData?.details?.some((d) => d.target !== ZERO_ADDRESS) && (
+              <>
+                <ThemedText.SubHeaderLarge>
+                  <Trans>Details</Trans>
+                </ThemedText.SubHeaderLarge>
+                {proposalData?.details?.map((d, i) => {
+                  return (
+                    <DetailText key={i}>
+                      {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
+                      {d.callData.split(',').map((content, i) => {
+                        return (
+                          <span key={i}>
+                            {linkIfAddress(content)}
+                            {d.callData.split(',').length - 1 === i ? '' : ','}
+                          </span>
+                        )
+                      })}
+                      )
+                    </DetailText>
                   )
-                </DetailText>
-              )
-            })}
+                })}
+              </>
+            )}
           </AutoColumn>
           <AutoColumn gap="md">
             <ThemedText.SubHeaderLarge>
