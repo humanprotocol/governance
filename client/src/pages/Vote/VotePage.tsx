@@ -332,7 +332,8 @@ export default function VotePage() {
         try {
           const url = new URL(description)
           // Check if the URL ends with `.md`
-          if (url.pathname.endsWith('.md')) {
+          // Workaround for solving 21334436608831155290313754869298803265693554468267158113436859312488223664812 issue with URL
+          if (url.pathname.endsWith('.md') || url.pathname.endsWith('ad320253537688190aacba690679d3e2/raw')) {
             // Fetch the Markdown file
             const response = await fetch(url.toString())
             if (response.ok) {
