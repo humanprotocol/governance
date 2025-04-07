@@ -543,7 +543,7 @@ export default function VotePage() {
               </CardSection>
             </StyledDataCard>
           </CardWrapper>
-          <AutoColumn gap="16px">
+          {/* <AutoColumn gap="16px">
             <ThemedText.SubHeaderLarge>
               <Trans>Details</Trans>
             </ThemedText.SubHeaderLarge>
@@ -563,7 +563,7 @@ export default function VotePage() {
                 </DetailText>
               )
             })}
-          </AutoColumn>
+          </AutoColumn> */}
           <AutoColumn gap="md">
             <ThemedText.SubHeaderLarge>
               <Trans>Description</Trans>
