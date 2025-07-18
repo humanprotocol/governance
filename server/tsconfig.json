@@ -1,12 +1,27 @@
 {
   "compilerOptions": {
+    "target": "ES2019",
     "module": "commonjs",
+    "lib": ["es2019", "ES2020.Promise"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
     "esModuleInterop": true,
-    "target": "es6",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "declaration": true,
     "sourceMap": true,
-    "outDir": "dist",
-    "resolveJsonModule": true
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "removeComments": true,
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   },
-  "lib": ["es2015"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "test"]
 }
