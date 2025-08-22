@@ -16,8 +16,14 @@ export class ProposalDetailDto extends ProposalDto {
   proposer: string;
 
   @ApiProperty()
-  voteStart: number; // timestamp en segundos
+  voteStart: number;
 
   @ApiProperty()
-  voteEnd: number; // timestamp en segundos
+  voteEnd: number;
+
+  @ApiProperty({
+    description:
+      'Quorum value (string) once voting has started; "0" before start.',
+  })
+  quorum: string;
 }
