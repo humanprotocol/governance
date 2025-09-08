@@ -1,3 +1,7 @@
+import { BigNumber } from '@ethersproject/bignumber'
+import { keccak256 } from '@ethersproject/keccak256'
+import { toUtf8Bytes } from '@ethersproject/strings'
+import { formatEther } from '@ethersproject/units'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
@@ -5,9 +9,7 @@ import ExecuteModal from 'components/vote/ExecuteModal'
 import QueueModal from 'components/vote/QueueModal'
 import RequestCollectionsModal from 'components/vote/RequestCollectionsModal'
 import { useActiveLocale } from 'hooks/useActiveLocale'
-import useCurrentBlockTimestamp from 'hooks/useCurrentBlockTimestamp'
 import JSBI from 'jsbi'
-import useBlockNumber, { useHubBlockNumber } from 'lib/hooks/useBlockNumber'
 import { useTokenBalance } from 'lib/hooks/useCurrencyBalance'
 import { Box } from 'nft/components/Box'
 import { WarningCircleIcon } from 'nft/components/icons'
@@ -18,8 +20,6 @@ import ReactMarkdown from 'react-markdown'
 import { useParams } from 'react-router-dom'
 import { useAppSelector } from 'state/hooks'
 import styled from 'styled-components/macro'
-import { checkProposalState } from 'utils/checkProposalPendingState'
-import { getDateFromBlock } from 'utils/getDateFromBlock'
 
 import { ButtonPrimary } from '../../components/Button'
 import { GrayCard } from '../../components/Card'
@@ -28,7 +28,6 @@ import { CardSection, DataCard } from '../../components/earn/styled'
 import { RowBetween, RowFixed } from '../../components/Row'
 import DelegateModal from '../../components/vote/DelegateModal'
 import VoteModal from '../../components/vote/VoteModal'
-import { AVERAGE_BLOCK_TIME_IN_SECS, DEFAULT_AVERAGE_BLOCK_TIME_IN_SECS } from '../../constants/governance'
 import { ZERO_ADDRESS } from '../../constants/misc'
 import { UNI } from '../../constants/tokens'
 import {
@@ -41,19 +40,19 @@ import {
 } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
 import {
-  ProposalData,
+  ProposalExecutionData,
   ProposalState,
-  useAllVotes,
+  useCancelCallback,
   useCollectionStatus,
+  useGetAllVotes,
+  useGetProposalDetails,
+  useGovernanceHubContract,
   useHasVoted,
-  useProposalData,
-  useQuorum,
   useUserDelegatee,
   useUserVotesAsOfBlock,
 } from '../../state/governance/hooks'
 import { VoteOption } from '../../state/governance/types'
 import { ExternalLink, StyledInternalLink, ThemedText } from '../../theme'
-import { isAddress } from '../../utils'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ProposalStatus } from './styled'
 
@@ -124,9 +123,10 @@ const StyledTitleAutoColumn = styled(AutoColumn)`
   }
 `
 
-const CardWrapper = styled.div`
+const CardWrapper = styled.div<{ display: string }>`
   gap: 12px;
   width: 100%;
+  display: ${({ display }) => display};
 `
 
 const StyledDataCard = styled(DataCard)`
@@ -166,55 +166,37 @@ const WrapSmall = styled(RowBetween)`
   `};
 `
 
-const DetailText = styled.div`
-  color: ${({ theme }) => theme.textPrimary};
-  word-break: break-all;
-
-  span:nth-child(0),
-  a {
-    color: ${({ theme }) => theme.textVioletSecondary};
-  }
-`
-
 const ProposerAddressLink = styled(ExternalLink)`
   word-break: break-all;
   color: ${({ theme }) => theme.textVioletSecondary};
 `
 
-export default function VotePage() {
-  const { governorIndex, id } = useParams() as {
-    governorIndex: string
-    id: string
-  }
+function MarkdownImage({ ...rest }) {
+  return <img {...rest} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+}
 
-  const { votes, loading } = useAllVotes(id)
+export default function VotePage() {
+  const { id } = useParams() as { id: string }
+
+  const { votes, loading } = useGetAllVotes(id)
+  const { proposalDetails } = useGetProposalDetails(id)
 
   const forVotes = votes['for']
   const againstVotes = votes['against']
   const abstainVotes = votes['abstain']
 
-  const parsedGovernorIndex = Number.parseInt(governorIndex)
   const { chainId, account } = useWeb3React()
-
+  const govHubContract = useGovernanceHubContract()
   const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
-  const hubBlock = useHubBlockNumber()
-
-  const quorumAmount = useQuorum()
-  // const quorumNumber = Number(quorumAmount?.toExact())
-  const quorumNumber = Number(
-    quorumAmount?.toExact({
-      groupSeparator: ',',
-    })
-  )
-
   const hasVoted = useHasVoted(id)
-
-  // get data for this specific proposal
-  const proposalData: ProposalData | undefined = useProposalData(parsedGovernorIndex, id)
-  const { proposalExecutionData, status, endBlock } = proposalData || {}
+  const cancelCallback = useCancelCallback()
 
   // update vote option based on button interactions
   const [voteOption, setVoteOption] = useState<VoteOption | undefined>(undefined)
+  const [status, setStatus] = useState<ProposalState>(ProposalState.UNDETERMINED)
+  const [executionData, setExecutionData] = useState<ProposalExecutionData | undefined>(undefined)
+  const [markdownContent, setMarkdownContent] = useState('')
+  const [isCancelling, setIsCancelling] = useState(false)
 
   // modal for casting votes
   const showVoteModal = useModalIsOpen(ApplicationModal.VOTE)
@@ -237,22 +219,7 @@ export default function VotePage() {
   const toggleExecuteModal = useToggleExecuteModal()
 
   // get and format date from data
-  const currentTimestamp = useCurrentBlockTimestamp()
-  const currentBlock = useBlockNumber()
-
-  const startDate = getDateFromBlock(
-    proposalData?.startBlock,
-    currentBlock,
-    (chainId && AVERAGE_BLOCK_TIME_IN_SECS[chainId]) ?? DEFAULT_AVERAGE_BLOCK_TIME_IN_SECS,
-    currentTimestamp
-  )
-  const endDate = getDateFromBlock(
-    proposalData?.endBlock,
-    currentBlock,
-    (chainId && AVERAGE_BLOCK_TIME_IN_SECS[chainId]) ?? DEFAULT_AVERAGE_BLOCK_TIME_IN_SECS,
-    currentTimestamp
-  )
-  const now = new Date()
+  const now = new Date().getTime()
   const locale = useActiveLocale()
   const dateFormat: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -262,24 +229,27 @@ export default function VotePage() {
     minute: 'numeric',
     timeZoneName: 'short',
   }
+  const startDate = new Date(proposalDetails?.voteStart || 0).toLocaleString(locale, dateFormat)
+  const endDate = new Date(proposalDetails?.voteEnd || 0).toLocaleString(locale, dateFormat)
 
   const totalVotes = forVotes + abstainVotes
 
+  const quorumNumber = +formatEther(BigNumber.from(proposalDetails?.quorum || '0'))
   const quorumPercentage =
     totalVotes > 0 && quorumNumber > 0 ? (((forVotes + againstVotes + abstainVotes) / quorumNumber) * 100).toFixed() : 0
 
   // only count available votes as of the proposal start block
   const availableVotes: CurrencyAmount<Token> | undefined = useUserVotesAsOfBlock(
-    proposalData?.startBlock ?? undefined,
+    +(proposalDetails?.voteStart || '0') / 1000,
     id
   )
 
   // only show voting if user has > 0 votes at proposal start block and proposal is active,
   const showVotingButtons =
-    availableVotes &&
+    !!availableVotes &&
     JSBI.greaterThan(availableVotes.quotient, JSBI.BigInt(0)) &&
-    proposalData &&
-    proposalData.status === ProposalState.ACTIVE &&
+    !!proposalDetails &&
+    status === ProposalState.ACTIVE &&
     !!account &&
     !hasVoted
 
@@ -290,27 +260,22 @@ export default function VotePage() {
   } = useCollectionStatus(id)
 
   const showRequestCollectionsButton = Boolean(
-    isHubChainActive &&
-      account &&
-      checkProposalState(status, hubBlock, endBlock) === ProposalState.COLLECTION_PHASE &&
-      !collectionFinishedResponse
+    isHubChainActive && account && status === ProposalState.COLLECTION_PHASE && !collectionFinishedResponse
   )
 
+  const showCancelButton = !!account && account === proposalDetails?.proposer && status === ProposalState.PENDING
+
   const collectionPhaseInProgress = Boolean(
-    account &&
-      checkProposalState(status, hubBlock, endBlock) === ProposalState.COLLECTION_PHASE &&
-      collectionStartedResponse &&
-      !collectionFinishedResponse
+    account && status === ProposalState.COLLECTION_PHASE && collectionStartedResponse && !collectionFinishedResponse
   )
 
   const showQueueButton =
-    Boolean(isHubChainActive && account && proposalData?.status === ProposalState.SUCCEEDED) &&
+    Boolean(isHubChainActive && account && status === ProposalState.SUCCEEDED) &&
     !!collectionStartedResponse &&
     !!collectionFinishedResponse
 
   const showExecuteButton =
-    Boolean(isHubChainActive && account && proposalData?.status === ProposalState.QUEUED) &&
-    !!collectionFinishedResponse
+    Boolean(isHubChainActive && account && status === ProposalState.QUEUED) && !!collectionFinishedResponse
 
   const uniBalance: CurrencyAmount<Token> | undefined = useTokenBalance(
     account ?? undefined,
@@ -323,11 +288,43 @@ export default function VotePage() {
     uniBalance && JSBI.notEqual(uniBalance.quotient, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
-  const [markdownContent, setMarkdownContent] = useState<string | undefined>(undefined)
+  useEffect(() => {
+    async function getProposalStatus() {
+      if (id && govHubContract) {
+        const [status] = await govHubContract.functions.state(id, {})
+        setStatus(status)
+      }
+    }
+
+    getProposalStatus()
+  }, [id, govHubContract])
+
+  useEffect(() => {
+    async function getProposalExecutionData() {
+      if (govHubContract) {
+        const filter = govHubContract.filters.ProposalCreated()
+        const events = await govHubContract.queryFilter(filter)
+        if (events.length > 0) {
+          const event = events.find((event) => event.args?.proposalId.toString() === id)
+          const args = event?.args
+          if (args) {
+            setExecutionData({
+              targets: args?.targets,
+              values: args?.[3],
+              calldatas: args?.calldatas,
+              descriptionHash: keccak256(toUtf8Bytes(args?.description)),
+            })
+          }
+        }
+      }
+    }
+
+    getProposalExecutionData()
+  }, [govHubContract, id])
 
   useEffect(() => {
     const checkAndFetchMarkdown = async () => {
-      const description = proposalData?.description
+      const description = proposalDetails?.description
       if (description) {
         try {
           const url = new URL(description)
@@ -353,32 +350,34 @@ export default function VotePage() {
       }
     }
 
-    if (proposalData?.description) {
+    if (proposalDetails?.description) {
       checkAndFetchMarkdown()
     }
-  }, [proposalData?.description])
+  }, [proposalDetails?.description])
 
-  // show links in propsoal details if content is an address
-  // if content is contract with common name, replace address with common name
-  const linkIfAddress = (content: string) => {
-    if (isAddress(content) && chainId) {
-      return <ExternalLink href={getExplorerLink(chainId, content, ExplorerDataType.ADDRESS)}>{content}</ExternalLink>
+  const handleCancelProposal = async () => {
+    if (cancelCallback && !isCancelling) {
+      setIsCancelling(true)
+      try {
+        await cancelCallback(proposalDetails?.proposalId, executionData)
+        setStatus(ProposalState.CANCELED)
+      } catch (error) {
+        console.error(error)
+      } finally {
+        setIsCancelling(false)
+      }
     }
-    return <span>{content}</span>
   }
 
-  function MarkdownImage({ ...rest }) {
-    return <img {...rest} style={{ width: '100%', height: '100$', objectFit: 'cover' }} alt="" />
-  }
+  if (!proposalDetails) return null
 
-  if (!proposalData) return null
   return (
     <>
       <PageWrapper gap="lg" justify="center">
         <VoteModal
           isOpen={showVoteModal}
           onDismiss={toggleVoteModal}
-          proposalId={proposalData?.id}
+          proposalId={proposalDetails?.proposalId}
           voteOption={voteOption}
           availableVotes={availableVotes}
           id={id}
@@ -392,14 +391,14 @@ export default function VotePage() {
         <QueueModal
           isOpen={showQueueModal}
           onDismiss={toggleQueueModal}
-          proposalId={proposalData?.id}
-          proposalExecutionData={proposalExecutionData}
+          proposalId={proposalDetails?.proposalId}
+          proposalExecutionData={executionData}
         />
         <ExecuteModal
           isOpen={showExecuteModal}
           onDismiss={toggleExecuteModal}
-          proposalId={proposalData?.id}
-          proposalExecutionData={proposalExecutionData}
+          proposalId={proposalDetails?.proposalId}
+          proposalExecutionData={executionData}
         />
         <ProposalInfo gap="lg" justify="start">
           <RowBetween style={{ width: '100%' }}>
@@ -408,51 +407,45 @@ export default function VotePage() {
                 <ArrowLeft size={20} /> Proposals
               </Trans>
             </ArrowWrapper>
-            {proposalData && <ProposalStatus status={checkProposalState(status, hubBlock, endBlock)} />}
+            {proposalDetails && <ProposalStatus status={status} />}
           </RowBetween>
           <StyledTitleAutoColumn gap="10px">
             <ThemedText.SubHeaderLarge style={{ marginBottom: '.5rem' }}>
-              {proposalData?.title}
+              {proposalDetails?.title}
             </ThemedText.SubHeaderLarge>
             <RowBetween>
               <ThemedText.DeprecatedMain>
-                {startDate && startDate > now ? (
-                  <Trans>Voting starts approximately {startDate.toLocaleString(locale, dateFormat)}</Trans>
-                ) : null}
+                {proposalDetails?.voteStart > now ? <Trans>Voting starts approximately {startDate}</Trans> : null}
               </ThemedText.DeprecatedMain>
             </RowBetween>
             <RowBetween>
               <ThemedText.DeprecatedMain>
                 {endDate &&
-                  (endDate < now ? (
-                    <Trans>Voting ended {endDate.toLocaleString(locale, dateFormat)}</Trans>
+                  (proposalDetails?.voteEnd < now ? (
+                    <Trans>Voting ended {endDate}</Trans>
                   ) : (
-                    <Trans>Voting ends approximately {endDate.toLocaleString(locale, dateFormat)}</Trans>
+                    <Trans>Voting ends approximately {endDate}</Trans>
                   ))}
               </ThemedText.DeprecatedMain>
             </RowBetween>
-            {proposalData &&
-              proposalData.status === ProposalState.ACTIVE &&
-              showVotingButtons === false &&
-              !hasVoted &&
-              account && (
-                <GrayCard>
-                  <Box>
-                    <WarningCircleIcon />
-                  </Box>
-                  Only vHMT votes that were self delegated before block {proposalData.startBlock} are eligible for
-                  voting.
-                  {showLinkForUnlock && (
-                    <span>
-                      <Trans>
-                        <StyledInternalLink to="/vote">Unlock voting</StyledInternalLink> to prepare for the next
-                        proposal.
-                      </Trans>
-                    </span>
-                  )}
-                </GrayCard>
-              )}
-            {proposalData && hasVoted && account && (
+            {proposalDetails && status === ProposalState.ACTIVE && !showVotingButtons && !hasVoted && account && (
+              <GrayCard>
+                <Box>
+                  <WarningCircleIcon />
+                </Box>
+                Only vHMT votes that were self delegated before block {+proposalDetails.voteStart / 1000}
+                are eligible for voting.
+                {showLinkForUnlock && (
+                  <span>
+                    <Trans>
+                      <StyledInternalLink to="/vote">Unlock voting</StyledInternalLink> to prepare for the next
+                      proposal.
+                    </Trans>
+                  </span>
+                )}
+              </GrayCard>
+            )}
+            {proposalDetails && hasVoted && account && (
               <GrayCard>
                 <Box>
                   <WarningCircleIcon />
@@ -460,7 +453,7 @@ export default function VotePage() {
                 <Trans>You have already voted for this proposal.</Trans>
               </GrayCard>
             )}
-            {proposalData && !account && (
+            {proposalDetails && !account && (
               <GrayCard>
                 <Box>
                   <WarningCircleIcon />
@@ -470,15 +463,23 @@ export default function VotePage() {
             )}
           </StyledTitleAutoColumn>
 
-          <VotingButtons
-            forVotes={forVotes}
-            againstVotes={againstVotes}
-            abstainVotes={abstainVotes}
-            setVoteOption={setVoteOption}
-            showVotingButtons={showVotingButtons}
-            proposalStatus={proposalData?.status}
-            loading={loading}
-          />
+          {status > 0 && (
+            <VotingButtons
+              forVotes={forVotes}
+              againstVotes={againstVotes}
+              abstainVotes={abstainVotes}
+              setVoteOption={setVoteOption}
+              showVotingButtons={showVotingButtons}
+              proposalStatus={status}
+              loading={loading}
+            />
+          )}
+
+          {showCancelButton && (
+            <ButtonPrimary onClick={handleCancelProposal} disabled={!cancelCallback || isCancelling}>
+              <Trans>Cancel</Trans>
+            </ButtonPrimary>
+          )}
 
           {showRequestCollectionsButton && !collectionStatusLoading && (
             <ButtonPrimary
@@ -519,7 +520,7 @@ export default function VotePage() {
               </RowFixed>
             </>
           )}
-          <CardWrapper>
+          <CardWrapper display={status > 0 ? 'block' : 'none'}>
             <StyledDataCard>
               <CardSection>
                 <AutoColumn gap="md">
@@ -527,7 +528,7 @@ export default function VotePage() {
                     <ThemedText.BodyPrimary fontSize={14}>
                       <Trans>Quorum</Trans>
                     </ThemedText.BodyPrimary>
-                    {proposalData ? (
+                    {proposalDetails ? (
                       <ThemedText.BodyPrimary fontSize={14}>
                         {totalVotes}
                         <span>{` / ${quorumNumber ? quorumNumber : '-'}`}</span>
@@ -543,27 +544,6 @@ export default function VotePage() {
               </CardSection>
             </StyledDataCard>
           </CardWrapper>
-          {/* <AutoColumn gap="16px">
-            <ThemedText.SubHeaderLarge>
-              <Trans>Details</Trans>
-            </ThemedText.SubHeaderLarge>
-            {proposalData?.details?.map((d, i) => {
-              return (
-                <DetailText key={i}>
-                  {i + 1}: {linkIfAddress(d.target)}.{d.functionSig}(
-                  {d.callData.split(',').map((content, i) => {
-                    return (
-                      <span key={i}>
-                        {linkIfAddress(content)}
-                        {d.callData.split(',').length - 1 === i ? '' : ','}
-                      </span>
-                    )
-                  })}
-                  )
-                </DetailText>
-              )
-            })}
-          </AutoColumn> */}
           <AutoColumn gap="md">
             <ThemedText.SubHeaderLarge>
               <Trans>Description</Trans>
@@ -583,12 +563,12 @@ export default function VotePage() {
             </ThemedText.SubHeaderLarge>
             <ProposerAddressLink
               href={
-                proposalData?.proposer && chainId
-                  ? getExplorerLink(chainId, proposalData?.proposer, ExplorerDataType.ADDRESS)
+                proposalDetails?.proposer && chainId
+                  ? getExplorerLink(chainId, proposalDetails?.proposer, ExplorerDataType.ADDRESS)
                   : ''
               }
             >
-              <ReactMarkdown source={proposalData?.proposer} />
+              <ReactMarkdown source={proposalDetails?.proposer} />
             </ProposerAddressLink>
           </AutoColumn>
         </ProposalInfo>

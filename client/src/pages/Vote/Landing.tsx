@@ -9,7 +9,6 @@ import DepositHMTModal from 'components/vote/DepositHMTModal'
 import DepositVHMTModal from 'components/vote/DepositVHMTModal'
 import ProposalEmptyState from 'components/vote/ProposalEmptyState'
 import JSBI from 'jsbi'
-import { useHubBlockNumber } from 'lib/hooks/useBlockNumber'
 import { useHmtContractToken } from 'lib/hooks/useCurrencyBalance'
 import { useTokenBalance } from 'lib/hooks/useCurrencyBalance'
 import { useIsMobile } from 'nft/hooks'
@@ -23,13 +22,11 @@ import {
   useToggleDelegateModal,
 } from 'state/application/hooks'
 import { ApplicationModal } from 'state/application/reducer'
-import { ProposalData } from 'state/governance/hooks'
-import { useAllProposalData, useUserDelegatee, useUserVotes } from 'state/governance/hooks'
+import { ProposalData, useAllProposalData, useUserDelegatee, useUserVotes } from 'state/governance/hooks'
 import styled from 'styled-components/macro'
 import { ExternalLink, ThemedText } from 'theme'
 import { shortenAddress } from 'utils'
 import { shortenString } from 'utils'
-import { checkProposalState } from 'utils/checkProposalPendingState'
 import { ExplorerDataType, getExplorerLink } from 'utils/getExplorerLink'
 import { shortenTitle } from 'utils/shortenTitle'
 
@@ -71,7 +68,7 @@ const ProposalsContainer = styled(AutoColumn)`
   }
 `
 
-const Proposal = styled(Button)`
+const ProposalLink = styled(Button)`
   width: 100%;
   display: flex;
   align-items: center;
@@ -219,7 +216,6 @@ const UnlockVotingContainer = styled.div`
 export default function Landing() {
   const { account, chainId } = useWeb3React()
   const isMobile = useIsMobile()
-  const hubBlock = useHubBlockNumber()
 
   const showDelegateModal = useModalIsOpen(ApplicationModal.DELEGATE)
   const toggleDelegateModal = useToggleDelegateModal()
@@ -231,7 +227,7 @@ export default function Landing() {
   const toggleDepositVHMTModal = useDepositVHMTModal()
 
   // get data to list all proposals
-  const { data: allProposals } = useAllProposalData()
+  const { data: proposals } = useAllProposalData()
 
   // user data
   const { availableVotes } = useUserVotes()
@@ -350,27 +346,26 @@ export default function Landing() {
           <ThemedText.HeadlineLarge style={{ margin: '28px 0 12px 0', flexShrink: 0 }}>
             <Trans>Proposals</Trans>
           </ThemedText.HeadlineLarge>
-          <div />
-          {allProposals?.length === 0 && <ProposalEmptyState />}
-          {allProposals &&
-            allProposals
+          {proposals?.length === 0 && <ProposalEmptyState />}
+          {proposals &&
+            proposals
               ?.slice(0)
               ?.reverse()
               ?.map((p: ProposalData) => {
                 return isMobile ? (
-                  <Proposal as={Link} to={`/${p.governorIndex}/${p.id}`} key={`${p.governorIndex}${p.id}`}>
+                  <ProposalLink as={Link} to={`/proposal/${p.id}`} key={p.id}>
                     <RowBetween>
                       <ProposalNumber>{shortenString(p.id)}</ProposalNumber>
-                      <ProposalStatus status={checkProposalState(p.status, hubBlock, p.endBlock)} />
+                      <ProposalStatus status={p.status} />
                     </RowBetween>
                     <ProposalTitle>{shortenTitle(p.title)}</ProposalTitle>
-                  </Proposal>
+                  </ProposalLink>
                 ) : (
-                  <Proposal as={Link} to={`/${p.governorIndex}/${p.id}`} key={`${p.governorIndex}${p.id}`}>
+                  <ProposalLink as={Link} to={`/proposal/${p.id}`} key={p.id}>
                     <ProposalNumber>{shortenString(p.id)}</ProposalNumber>
                     <ProposalTitle>{shortenTitle(p.title)}</ProposalTitle>
-                    <ProposalStatus status={checkProposalState(p.status, hubBlock, p.endBlock)} />
-                  </Proposal>
+                    <ProposalStatus status={p.status} />
+                  </ProposalLink>
                 )
               })}
         </ProposalsContainer>

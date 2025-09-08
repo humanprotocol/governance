@@ -8,7 +8,7 @@ import styled, { useTheme } from 'styled-components/macro'
 import { shortenString } from 'utils'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { proposalExecutionData, useQueueCallback } from '../../state/governance/hooks'
+import { ProposalExecutionData, useQueueCallback } from '../../state/governance/hooks'
 import { CustomLightSpinner, ThemedText } from '../../theme'
 import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
@@ -41,7 +41,7 @@ interface QueueModalProps {
   isOpen: boolean
   onDismiss: () => void
   proposalId: string | undefined // id for the proposal to queue
-  proposalExecutionData: proposalExecutionData | undefined
+  proposalExecutionData: ProposalExecutionData | undefined
 }
 
 export default function QueueModal({ isOpen, onDismiss, proposalId, proposalExecutionData }: QueueModalProps) {

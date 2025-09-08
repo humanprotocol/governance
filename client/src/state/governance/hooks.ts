@@ -1,18 +1,16 @@
-import { defaultAbiCoder, Interface } from '@ethersproject/abi'
 import { isAddress } from '@ethersproject/address'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
-import { keccak256 } from '@ethersproject/keccak256'
 import { TransactionResponse } from '@ethersproject/providers'
-import { toUtf8Bytes, toUtf8String, Utf8ErrorFuncs, Utf8ErrorReason } from '@ethersproject/strings'
+import { formatEther } from '@ethersproject/units'
 import GOVERNOR_SPOKE_ABI from '@human-protocol/core/artifacts/contracts/governance/DAOSpokeContract.sol/DAOSpokeContract.json'
 import GOVERNOR_HUB_ABI from '@human-protocol/core/artifacts/contracts/governance/MetaHumanGovernor.sol/MetaHumanGovernor.json'
-// eslint-disable-next-line no-restricted-imports
 import { t } from '@lingui/macro'
-import { BigintIsh, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import HmtUniJSON from 'abis/HMToken.json'
 import UniJSON from 'abis/VHMToken.json'
+import { fetchProposalDetails, fetchProposals, Proposal, ProposalDetails } from 'api/proposals'
 import { fetchVotes } from 'api/votes'
 import { GOVERNANCE_HUB_ADDRESS, GOVERNANCE_SPOKE_ADRESSES } from 'constants/addresses'
 import { HUB_CHAIN_ID } from 'constants/addresses'
@@ -20,19 +18,15 @@ import { SupportedChainId } from 'constants/chains'
 import { RPC_PROVIDERS } from 'constants/providers'
 import { useContract, useContractWithCustomProvider } from 'hooks/useContract'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
 import { useAppSelector } from 'state/hooks'
-import { aggregateVotes } from 'utils/aggregateVotes'
 import { calculateGasMargin } from 'utils/calculateGasMargin'
 
-import { BRAVO_START_BLOCK, MOONBEAN_START_BLOCK, ONE_BIP_START_BLOCK } from '../../constants/proposals'
 import { UNI } from '../../constants/tokens'
-import { useLogs } from '../logs/hooks'
 import { useTransactionAdder } from '../transactions/hooks'
 import { TransactionType } from '../transactions/types'
 import { VoteOption } from './types'
 
-function useGovernanceHubContract(): Contract | null {
+export function useGovernanceHubContract(): Contract | null {
   const { abi } = GOVERNOR_HUB_ABI
 
   return useContractWithCustomProvider(GOVERNANCE_HUB_ADDRESS, abi, RPC_PROVIDERS[HUB_CHAIN_ID as SupportedChainId])
@@ -88,13 +82,7 @@ export function useHMTUniContract() {
   return { hmtUniContract, loading, handleSetHMTLoading }
 }
 
-interface ProposalDetail {
-  target: string
-  functionSig: string
-  callData: string
-}
-
-export interface proposalExecutionData {
+export interface ProposalExecutionData {
   targets: string[]
   values: string[]
   calldatas: string[]
@@ -104,26 +92,7 @@ export interface proposalExecutionData {
 export interface ProposalData {
   id: string
   title: string
-  description: string
-  proposer: string
   status: ProposalState
-  hubForCount: CurrencyAmount<Token>
-  hubAgainstCount: CurrencyAmount<Token>
-  hubAbstainCount: CurrencyAmount<Token>
-  spokeForCount: CurrencyAmount<Token>
-  spokeAgainstCount: CurrencyAmount<Token>
-  spokeAbstainCount: CurrencyAmount<Token>
-  startBlock: number
-  endBlock: number
-  details: ProposalDetail[]
-  governorIndex: number
-  proposalExecutionData: proposalExecutionData
-}
-
-interface ProposalVote {
-  abstainVotes: BigintIsh
-  againstVotes: BigintIsh
-  forVotes: BigintIsh
 }
 
 export enum ProposalState {
@@ -138,164 +107,24 @@ export enum ProposalState {
   EXECUTED,
   COLLECTION_PHASE,
 }
-const GovernorAbi = GOVERNOR_HUB_ABI.abi
-const GovernanceInterface = new Interface(GovernorAbi)
-
-interface FormattedProposalLog {
-  id: BigNumber
-  description: string
-  details: { target: string; functionSig: string; callData: string }[]
-  proposer: string
-  startBlock: number
-  endBlock: number
-  targets: string[]
-  values: string[]
-  calldatas: string[]
-  descriptionHash: string
-}
-
-const FOUR_BYTES_DIR: { [sig: string]: string } = {
-  '0x5ef2c7f0': 'setSubnodeRecord(bytes32,bytes32,address,address,uint64)',
-  '0x10f13a8c': 'setText(bytes32,string,string)',
-  '0xb4720477': 'sendMessageToChild(address,bytes)',
-  '0xa9059cbb': 'transfer(address,uint256)',
-  '0x095ea7b3': 'approve(address,uint256)',
-  '0x7b1837de': 'fund(address,uint256)',
-}
-
-/**
- * Need proposal events to get description data emitted from
- * new proposal event.
- */
-function useFormattedProposalCreatedLogs(
-  contract: Contract | null,
-  fromBlock?: number,
-  toBlock?: number
-): FormattedProposalLog[] | undefined {
-  // create filters for ProposalCreated events
-  const filter = useMemo(() => {
-    const filter = contract?.filters?.ProposalCreated()
-    if (!filter) return undefined
-
-    return {
-      ...filter,
-      fromBlock,
-      toBlock,
-    }
-    // eslint-disable-next-line
-  }, [contract])
-
-  const useLogsResult = useLogs(filter)
-
-  return useMemo(() => {
-    return useLogsResult?.logs
-      ?.map((log) => {
-        const parsed = GovernanceInterface.parseLog(log).args
-
-        return parsed
-      })
-      ?.map((parsed) => {
-        let description!: string
-
-        const startBlock = parseInt(parsed.voteStart?.toString())
-        try {
-          description = parsed.description
-        } catch (error) {
-          // replace invalid UTF-8 in the description with replacement characters
-          let onError = Utf8ErrorFuncs.replace
-
-          // Bravo proposal reverses the codepoints for U+2018 (‘) and U+2026 (…)
-          if (startBlock === BRAVO_START_BLOCK) {
-            const U2018 = [0xe2, 0x80, 0x98].toString()
-            const U2026 = [0xe2, 0x80, 0xa6].toString()
-            onError = (reason, offset, bytes, output) => {
-              if (reason === Utf8ErrorReason.UNEXPECTED_CONTINUE) {
-                const charCode = [bytes[offset], bytes[offset + 1], bytes[offset + 2]].reverse().toString()
-                if (charCode === U2018) {
-                  output.push(0x2018)
-                  return 2
-                } else if (charCode === U2026) {
-                  output.push(0x2026)
-                  return 2
-                }
-              }
-              return Utf8ErrorFuncs.replace(reason, offset, bytes, output)
-            }
-          }
-
-          description = JSON.parse(toUtf8String(error.error.value, onError)) || ''
-        }
-
-        // some proposals omit newlines
-        if (
-          startBlock === BRAVO_START_BLOCK ||
-          startBlock === ONE_BIP_START_BLOCK ||
-          startBlock === MOONBEAN_START_BLOCK
-        ) {
-          description = description.replace(/ {2}/g, '\n').replace(/\d\. /g, '\n$&')
-        }
-        const id = parsed.proposalId
-        const proposer = parsed.proposer
-        return {
-          id,
-          description,
-          details: parsed.targets.map((target: string, i: number) => {
-            const signature = parsed.signatures[i]
-            let calldata = parsed.calldatas[i]
-            let name: string
-            let types: string
-            if (signature === '') {
-              const fourbyte = calldata.slice(0, 10)
-              const sig = FOUR_BYTES_DIR[fourbyte] ?? 'UNKNOWN()'
-              if (!sig) throw new Error('Missing four byte sig')
-              ;[name, types] = sig.substring(0, sig.length - 1).split('(')
-              calldata = `0x${calldata.slice(10)}`
-            } else {
-              ;[name, types] = signature.substring(0, signature.length - 1).split('(')
-            }
-            const decoded = defaultAbiCoder.decode(types.split(','), calldata)
-            return {
-              target,
-              functionSig: name,
-              callData: decoded.join(', '),
-            }
-          }),
-
-          proposer,
-          startBlock,
-          endBlock: parseInt(parsed.voteEnd?.toString()),
-          targets: parsed.targets,
-          values: parsed[3],
-          //BLOCKYTODO: values hardcoded because there's a known problem with the abi. Link: https://github.com/ethers-io/ethers.js/issues/3744
-          calldatas: parsed.calldatas,
-          descriptionHash: keccak256(toUtf8Bytes(parsed.description)),
-        }
-      })
-  }, [useLogsResult])
-}
 
 // get data for all past and active proposals
 export function useAllProposalData(): { data: ProposalData[]; loading: boolean } {
   const [proposalStatuses, setProposalStatuses] = useState<number[]>([])
-  const [proposalHubVotes, setProposalHubVotes] = useState<ProposalVote[]>([])
-  const [proposalSpokeVotes, setProposalSpokeVotes] = useState<ProposalVote[]>([])
 
   const { chainId } = useWeb3React()
   const govHubContract = useGovernanceHubContract()
-  const govSpokeContract = useGovernanceSpokeContract()
-  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
   const transactions = useAppSelector((state) => state.transactions)
 
-  // get metadata from past events
-  const toBlock = RPC_PROVIDERS[HUB_CHAIN_ID as SupportedChainId].blockNumber
-  const formattedLogsV2 = useFormattedProposalCreatedLogs(govHubContract, 0, toBlock)
+  const { proposals } = useGetAllProposals()
+  const proposalIndexes = proposals.map((proposal) => proposal.proposalId)
 
-  const govHubProposalIndexes = (formattedLogsV2 || []).map((item) => item.id)
+  const uniToken = useMemo(() => (chainId ? UNI[chainId] : undefined), [chainId])
 
   // get all proposal statuses
   useEffect(() => {
     async function getProposalStatuses() {
-      const proposalStatesV2Promises = govHubProposalIndexes.map(async (id) => {
+      const proposalStatesV2Promises = proposalIndexes.map(async (id) => {
         const [status] = await govHubContract?.functions.state(id.toString(), {})
         return status
       })
@@ -304,139 +133,26 @@ export function useAllProposalData(): { data: ProposalData[]; loading: boolean }
       setProposalStatuses(proposalStatesV2)
     }
 
-    if (govHubProposalIndexes.length > proposalStatuses.length) getProposalStatuses()
-  }, [govHubContract, govHubProposalIndexes, proposalStatuses, transactions])
-
-  //get proposal HUB votes
-  useEffect(() => {
-    async function getProposalVotes() {
-      try {
-        const proposalVotesV2Promises = govHubProposalIndexes.map(async (id: BigNumber) => {
-          const votes = await govHubContract?.functions.proposalVotes(id.toString(), {})
-          return votes
-        })
-        const proposalVotesV2 = await Promise.all(proposalVotesV2Promises)
-        setProposalHubVotes(proposalVotesV2)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-
-    if (govHubProposalIndexes.length > proposalHubVotes.length) {
-      getProposalVotes()
-    }
-  }, [govHubContract?.functions, govHubProposalIndexes, proposalHubVotes, chainId, isHubChainActive, transactions])
-
-  //get proposal SPOKE votes
-  useEffect(() => {
-    async function getProposalSpokeVotes() {
-      const proposalVotesV2Promises = govHubProposalIndexes.map(async (id: BigNumber) => {
-        const votes = await govSpokeContract?.functions.proposalVotes(id.toString(), {})
-        return votes
-      })
-
-      const proposalSpokeVotes = await Promise.all(proposalVotesV2Promises)
-      setProposalSpokeVotes(proposalSpokeVotes)
-    }
-
-    if (govHubProposalIndexes.length > proposalSpokeVotes.length && !isHubChainActive) getProposalSpokeVotes()
-  }, [govSpokeContract?.functions, govHubProposalIndexes, proposalSpokeVotes, chainId, isHubChainActive, transactions])
-
-  const uniToken = useMemo(() => (chainId ? UNI[chainId] : undefined), [chainId])
+    if (proposalIndexes.length > proposalStatuses.length) getProposalStatuses()
+  }, [govHubContract, proposalStatuses, transactions, proposalIndexes])
 
   // early return until events are fetched
   return useMemo(() => {
-    const proposalsCallData = [...(formattedLogsV2 || [])]
-
-    const formattedLogs = [...(formattedLogsV2 ?? [])]
-
-    if (!uniToken || (govHubContract && !formattedLogsV2)) {
+    if (!uniToken || (govHubContract && !proposals)) {
       return { data: [], loading: true }
     }
 
     return {
-      data: proposalsCallData.map((proposal, i) => {
-        const startBlock = parseInt(proposal.startBlock?.toString())
-
-        const description = formattedLogs[i]?.description ?? ''
-        let title: string
-        let desc: string
-        if (description.includes('[[')) {
-          const urlMatch = description.match(/\[\[(.*?)\]\]/)
-          title = description.replace(/\[\[(.*?)\]\]/, '').trim()
-          desc = urlMatch ? urlMatch[1].trim() : ''
-        } else {
-          title = description?.split(/#+\s|\n/g)[1] || t`Untitled`
-          desc = description
-        }
-
-        const forVotes = proposalHubVotes[i]?.forVotes || 0
-        const againstVotes = proposalHubVotes[i]?.againstVotes || 0
-        const abstainVotes = proposalHubVotes[i]?.abstainVotes || 0
-
-        const spokeForVotes = proposalSpokeVotes[i]?.forVotes || 0
-        const spokeAgainstVotes = proposalSpokeVotes[i]?.againstVotes || 0
-        const spokeAbstainVotes = proposalSpokeVotes[i]?.abstainVotes || 0
-
+      data: proposals.map((proposal, i) => {
         return {
-          id: proposal.id.toString(),
-          title: title ?? t`Untitled`,
-          description: desc ?? t`No description.`,
-          proposer: proposal.proposer,
+          id: proposal.proposalId,
+          title: proposal.title ?? t`Untitled`,
           status: proposalStatuses[i] ?? ProposalState.UNDETERMINED,
-          hubForCount: CurrencyAmount.fromRawAmount(uniToken, forVotes),
-          hubAgainstCount: CurrencyAmount.fromRawAmount(uniToken, againstVotes),
-          hubAbstainCount: CurrencyAmount.fromRawAmount(uniToken, abstainVotes),
-          spokeForCount: CurrencyAmount.fromRawAmount(uniToken, spokeForVotes),
-          spokeAgainstCount: CurrencyAmount.fromRawAmount(uniToken, spokeAgainstVotes),
-          spokeAbstainCount: CurrencyAmount.fromRawAmount(uniToken, spokeAbstainVotes),
-          startBlock,
-          endBlock: parseInt(proposal.endBlock?.toString()),
-          // eta: BigNumber.from(12),
-          details: formattedLogs[i]?.details,
-          governorIndex: 2, //TODO: check governorIndex usage
-          proposalExecutionData: {
-            targets: proposal.targets,
-            values: proposal.values,
-            calldatas: proposal.calldatas,
-            descriptionHash: proposal.descriptionHash,
-          },
         }
       }),
-
       loading: false,
     }
-  }, [formattedLogsV2, govHubContract, uniToken, proposalStatuses, proposalHubVotes, proposalSpokeVotes])
-}
-
-export function useProposalData(governorIndex: number, id: string): ProposalData | undefined {
-  const { data } = useAllProposalData()
-  return data.filter((p) => p.governorIndex === governorIndex)?.find((p) => p.id === id)
-}
-
-//get quorum value
-export function useQuorum(): CurrencyAmount<Token> | undefined {
-  const [quorum, setQuorum] = useState<number | undefined>(undefined)
-  const { chainId } = useWeb3React()
-  const uni = useMemo(() => (chainId ? UNI[chainId] : undefined), [chainId])
-  const gov2 = useGovernanceHubContract()
-  const { id } = useParams()
-
-  useEffect(() => {
-    async function getQuorum() {
-      if (gov2?.functions && id) {
-        const proposalSnapshot = await gov2.functions.proposalSnapshot(id.toString(), {})
-        if (proposalSnapshot) {
-          const quorumResponse = await gov2.functions.quorum(proposalSnapshot.toString(), {})
-          setQuorum(quorumResponse)
-        }
-      }
-    }
-
-    getQuorum()
-  }, [gov2?.functions, id])
-
-  return quorum && uni ? CurrencyAmount.fromRawAmount(uni, quorum) : undefined
+  }, [proposals, govHubContract, uniToken, proposalStatuses])
 }
 
 // get the users delegatee if it exists
@@ -662,15 +378,46 @@ export function useCollectionStatus(proposalId: string): {
   return { collectionStartedResponse, collectionFinishedResponse, loading }
 }
 
-export function useQueueCallback(): (
+export function useCancelCallback(): (
   proposalId: string | undefined,
-  proposalExecutionData: proposalExecutionData | undefined
+  proposalExecutionData: ProposalExecutionData | undefined
 ) => undefined | Promise<string> {
   const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
   const addTransaction = useTransactionAdder()
 
   return useCallback(
-    (proposalId: string | undefined, proposalExecutionData: proposalExecutionData | undefined) => {
+    (proposalId: string | undefined, proposalExecutionData: ProposalExecutionData | undefined) => {
+      const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
+
+      if (!contract || !proposalId) return
+      const args = [targets, values, calldatas, descriptionHash]
+
+      return contract.estimateGas.cancel(...args, {}).then((estimatedGasLimit) => {
+        return contract
+          .cancel(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
+          .then((response: TransactionResponse) => {
+            addTransaction(response, {
+              type: TransactionType.CANCEL,
+              governorAddress: contract.address,
+              proposalId: parseInt(proposalId),
+            })
+            return response.hash
+          })
+      })
+    },
+    [addTransaction, contract]
+  )
+}
+
+export function useQueueCallback(): (
+  proposalId: string | undefined,
+  proposalExecutionData: ProposalExecutionData | undefined
+) => undefined | Promise<string> {
+  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
+  const addTransaction = useTransactionAdder()
+
+  return useCallback(
+    (proposalId: string | undefined, proposalExecutionData: ProposalExecutionData | undefined) => {
       const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
 
       if (!contract || !proposalId) return
@@ -695,13 +442,13 @@ export function useQueueCallback(): (
 
 export function useExecuteCallback(): (
   proposalId: string | undefined,
-  proposalExecutionData: proposalExecutionData | undefined
+  proposalExecutionData: ProposalExecutionData | undefined
 ) => undefined | Promise<string> {
   const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
   const addTransaction = useTransactionAdder()
 
   return useCallback(
-    (proposalId: string | undefined, proposalExecutionData: proposalExecutionData | undefined) => {
+    (proposalId: string | undefined, proposalExecutionData: ProposalExecutionData | undefined) => {
       const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
 
       if (!contract || !proposalId) return
@@ -748,7 +495,11 @@ export function useHasVoted(proposalId: string | undefined): boolean {
   return hasVoted
 }
 
-export function useAllVotes(proposalId: string | undefined) {
+const toBigNumber = (value: number | string): BigNumber => {
+  return BigNumber.from(value.toString())
+}
+
+export function useGetAllVotes(proposalId: string | undefined) {
   const [votes, setVotes] = useState<{ for: number; against: number; abstain: number }>({
     for: 0,
     against: 0,
@@ -765,7 +516,12 @@ export function useAllVotes(proposalId: string | undefined) {
 
     fetchVotes(proposalId)
       .then((data) => {
-        setVotes(aggregateVotes(data))
+        const formattedData = {
+          for: +formatEther(toBigNumber(data.forVotes)),
+          against: +formatEther(toBigNumber(data.againstVotes)),
+          abstain: +formatEther(toBigNumber(data.abstainVotes)),
+        }
+        setVotes(formattedData)
       })
       .catch((err) => {
         setError(err)
@@ -776,4 +532,52 @@ export function useAllVotes(proposalId: string | undefined) {
   }, [proposalId])
 
   return { votes, loading, error }
+}
+
+export function useGetAllProposals() {
+  const [proposals, setProposals] = useState<Proposal[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    setLoading(true)
+    setError(null)
+
+    fetchProposals()
+      .then((data) => {
+        setProposals(data)
+      })
+      .catch((err) => {
+        setError(err)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [])
+
+  return { proposals, loading, error }
+}
+
+export function useGetProposalDetails(proposalId: string) {
+  const [proposalDetails, setProposalDetails] = useState<ProposalDetails | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    setLoading(true)
+    setError(null)
+
+    fetchProposalDetails(proposalId)
+      .then((data) => {
+        setProposalDetails(data)
+      })
+      .catch((err) => {
+        setError(err)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [proposalId])
+
+  return { proposalDetails, loading, error }
 }
