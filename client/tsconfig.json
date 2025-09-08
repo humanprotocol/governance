@@ -31,7 +31,7 @@
     "useUnknownInCatchVariables": false
   },
   "exclude": ["node_modules"],
-  "include": ["src/**/*", "src/**/*.json", "declarations.d.ts", "./declarations.d.ts"],
+  "include": ["src/**/*", "src/**/*.json", "declarations.d.ts", "./declarations.d.ts", "@lingui/**/*"],
   "watchOptions": {
     "excludeDirectories": ["node_modules"]
   }
