@@ -243,8 +243,8 @@
   },
   "engines": {
     "npm": "please-use-yarn",
-    "node": "22",
+    "node": "20",
     "yarn": ">=1.22"
   },
-  "packageManager": "yarn@4.9.4"
+  "packageManager": "yarn@1.22.19"
 }
