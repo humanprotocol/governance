@@ -65,7 +65,7 @@
     "@craco/craco": "^7.1.0",
     "@ethersproject/experimental": "^5.4.0",
     "@human-protocol/core": "^2.1.0",
-    "@lingui/cli": "^3.9.0",
+    "@lingui/cli": "^5.4.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.1",
     "@testing-library/user-event": "^14.4.3",
