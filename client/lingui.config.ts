@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { default as babelExtractor } from '@lingui/cli/api/extractors/babel'
 import { createHash } from 'crypto'
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
