@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { MixedRouteSDK } from '@uniswap/router-sdk'
+import { MixedRouteSDK, TPool } from '@uniswap/router-sdk'
 import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 import { Pair, Route as V2Route } from '@uniswap/v2-sdk'
 import { FeeAmount, Pool, Route as V3Route } from '@uniswap/v3-sdk'
@@ -64,7 +64,7 @@ function computeRoutes(
         routev2: isOnlyV2 ? new V2Route(route.map(parsePair), parsedCurrencyIn, parsedCurrencyOut) : null,
         mixedRoute:
           !isOnlyV3 && !isOnlyV2
-            ? new MixedRouteSDK(route.map(parsePoolOrPair), parsedCurrencyIn, parsedCurrencyOut)
+            ? new MixedRouteSDK(route.map(parsePoolOrPair) as TPool[], parsedCurrencyIn, parsedCurrencyOut)
             : null,
         inputAmount: CurrencyAmount.fromRawAmount(parsedCurrencyIn, rawAmountIn),
         outputAmount: CurrencyAmount.fromRawAmount(parsedCurrencyOut, rawAmountOut),

@@ -1,6 +1,7 @@
 import { Protocol } from '@uniswap/router-sdk'
-import { Currency, CurrencyAmount, TradeType } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token, TradeType } from '@uniswap/sdk-core'
 import { routeAmountsToString, SwapRoute } from '@uniswap/smart-order-router'
+import { Pair } from '@uniswap/v2-sdk'
 import { Pool } from '@uniswap/v3-sdk'
 import { QuoteResult, QuoteState } from 'state/routing/types'
 import { QuoteData, V2PoolInRoute, V3PoolInRoute } from 'state/routing/types'
@@ -29,9 +30,9 @@ export function transformSwapRouteToGetQuoteResult(
     const pools = subRoute.protocol === Protocol.V2 ? subRoute.route.pairs : subRoute.route.pools
     const curRoute: (V3PoolInRoute | V2PoolInRoute)[] = []
     for (let i = 0; i < pools.length; i++) {
-      const nextPool = pools[i]
-      const tokenIn = tokenPath[i]
-      const tokenOut = tokenPath[i + 1]
+      const nextPool = pools[i] as Pair | Pool
+      const tokenIn = tokenPath[i] as Token
+      const tokenOut = tokenPath[i + 1] as Token
 
       let edgeAmountIn = undefined
       if (i === 0) {
