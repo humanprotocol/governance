@@ -112,7 +112,7 @@ export class VoteService {
           againstVotes: totalAgainst,
           abstainVotes: totalAbstain,
         },
-        120, // 2 minutes for active proposals
+        180, // 3 minutes for active proposals
       );
     } else {
       // Other statuses (succeeded, defeated, etc.) check only hub votes
