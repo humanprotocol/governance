@@ -260,22 +260,19 @@ export default function VotePage() {
   } = useCollectionStatus(id)
 
   const showRequestCollectionsButton = Boolean(
-    isHubChainActive && account && status === ProposalState.COLLECTION_PHASE && !collectionFinishedResponse
+    isHubChainActive && account && status === ProposalState.SUCCEEDED && !collectionStartedResponse
   )
 
-  const showCancelButton = !!account && account === proposalDetails?.proposer && status === ProposalState.PENDING
+  const showCancelButton = !!account && status === ProposalState.PENDING
 
   const collectionPhaseInProgress = Boolean(
     account && status === ProposalState.COLLECTION_PHASE && collectionStartedResponse && !collectionFinishedResponse
   )
 
   const showQueueButton =
-    Boolean(isHubChainActive && account && status === ProposalState.SUCCEEDED) &&
-    !!collectionStartedResponse &&
-    !!collectionFinishedResponse
+    isHubChainActive && !!account && status === ProposalState.SUCCEEDED && !!collectionFinishedResponse
 
-  const showExecuteButton =
-    Boolean(isHubChainActive && account && status === ProposalState.QUEUED) && !!collectionFinishedResponse
+  const showExecuteButton = isHubChainActive && !!account && status === ProposalState.QUEUED
 
   const uniBalance: CurrencyAmount<Token> | undefined = useTokenBalance(
     account ?? undefined,
@@ -359,7 +356,8 @@ export default function VotePage() {
     if (cancelCallback && !isCancelling) {
       setIsCancelling(true)
       try {
-        await cancelCallback(proposalDetails?.proposalId, executionData)
+        const hash = await cancelCallback(proposalDetails?.proposalId, executionData)
+        console.log('Cancel transaction submitted', { hash })
         setStatus(ProposalState.CANCELED)
       } catch (error) {
         console.error(error)
@@ -415,17 +413,16 @@ export default function VotePage() {
             </ThemedText.SubHeaderLarge>
             <RowBetween>
               <ThemedText.DeprecatedMain>
-                {proposalDetails?.voteStart > now ? <Trans>Voting starts approximately {startDate}</Trans> : null}
+                {proposalDetails?.voteStart > now && status === ProposalState.PENDING ? (
+                  <Trans>Voting starts approximately {startDate}</Trans>
+                ) : null}
               </ThemedText.DeprecatedMain>
             </RowBetween>
             <RowBetween>
               <ThemedText.DeprecatedMain>
-                {endDate &&
-                  (proposalDetails?.voteEnd < now ? (
-                    <Trans>Voting ended {endDate}</Trans>
-                  ) : (
-                    <Trans>Voting ends approximately {endDate}</Trans>
-                  ))}
+                {proposalDetails?.voteEnd > now && status === ProposalState.ACTIVE ? (
+                  <Trans>Voting ends approximately {endDate}</Trans>
+                ) : null}
               </ThemedText.DeprecatedMain>
             </RowBetween>
             {proposalDetails && status === ProposalState.ACTIVE && !showVotingButtons && !hasVoted && account && (

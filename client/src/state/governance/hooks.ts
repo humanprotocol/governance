@@ -382,19 +382,24 @@ export function useCancelCallback(): (
   proposalId: string | undefined,
   proposalExecutionData: ProposalExecutionData | undefined
 ) => undefined | Promise<string> {
-  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
+  const { account, chainId } = useWeb3React()
+  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
+
+  const contract = useContract(
+    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
+    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
+  )
   const addTransaction = useTransactionAdder()
 
   return useCallback(
     (proposalId: string | undefined, proposalExecutionData: ProposalExecutionData | undefined) => {
-      const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
-
       if (!contract || !proposalId) return
+      const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
       const args = [targets, values, calldatas, descriptionHash]
 
-      return contract.estimateGas.cancel(...args, {}).then((estimatedGasLimit) => {
+      return contract.estimateGas.crossChainCancel(...args, {}).then((estimatedGasLimit) => {
         return contract
-          .cancel(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
+          .crossChainCancel(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
           .then((response: TransactionResponse) => {
             addTransaction(response, {
               type: TransactionType.CANCEL,
@@ -405,7 +410,7 @@ export function useCancelCallback(): (
           })
       })
     },
-    [addTransaction, contract]
+    [addTransaction, contract, account, chainId, isHubChainActive]
   )
 }
 
