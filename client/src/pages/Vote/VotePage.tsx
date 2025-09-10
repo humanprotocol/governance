@@ -263,7 +263,7 @@ export default function VotePage() {
     isHubChainActive && account && status === ProposalState.SUCCEEDED && !collectionStartedResponse
   )
 
-  const showCancelButton = !!account && status === ProposalState.PENDING
+  const showCancelButton = !!account && account === proposalDetails?.proposer && status === ProposalState.PENDING
 
   const collectionPhaseInProgress = Boolean(
     account && status === ProposalState.COLLECTION_PHASE && collectionStartedResponse && !collectionFinishedResponse

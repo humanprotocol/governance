@@ -2264,10 +2264,10 @@
   resolved "https://registry.yarnpkg.com/@fontsource/inter/-/inter-4.5.15.tgz#eed1873d68755d3b52d6fcfcfa3493118430a512"
   integrity sha512-FzleM9AxZQK2nqsTDtBiY0PMEVWvnKnuu2i09+p6DHvrHsuucoV2j0tmw+kAT3L4hvsLdAIDv6MdGehsPIdT+Q==
 
-"@human-protocol/core@^2.1.0":
-  version "2.1.4"
-  resolved "https://registry.yarnpkg.com/@human-protocol/core/-/core-2.1.4.tgz#c9713bab5c2dea60966f43833c70eacee9b8a27f"
-  integrity sha512-MjGQhBZ9olpZvnS/Su6TJ5ps6F/eD4nPpIe4Ebc9/qhWoGYI4+Q1gQPqDAdRJ8f7feEnhSi/zR38vMsdGhEFFw==
+"@human-protocol/core@^4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@human-protocol/core/-/core-4.2.1.tgz#336de3699620436eb606ddc7d663bcc7bf01a624"
+  integrity sha512-+VR112Qo/f1fdiEDNQ7BBm6yicE8c07vOf5FrlQc8uPLMxMEW+BR+Ve5FVYYgKrxjXmGBmTsrBYMEpKJ1QRR2Q==
 
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
@@ -19290,6 +19290,7 @@ workbox-window@6.6.1:
     workbox-core "6.6.1"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
