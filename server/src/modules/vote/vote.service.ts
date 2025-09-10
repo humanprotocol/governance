@@ -53,7 +53,7 @@ export class VoteService {
         againstVotes: 0,
         abstainVotes: 0,
       };
-      await this.cacheManager.set(cacheKey, result, 0);
+      await this.cacheManager.set(cacheKey, result, 300); // 5 minutes for pending proposals
       return result;
     }
 
