@@ -319,7 +319,12 @@ export function useVoteCallback(): (
 
 export function useRequestCollections(): (proposalId: string | undefined) => undefined | Promise<string> {
   const { account, chainId } = useWeb3React()
-  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
+  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
+
+  const contract = useContract(
+    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
+    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
+  )
   const addTransaction = useTransactionAdder()
 
   return useCallback(
@@ -352,8 +357,12 @@ export function useCollectionStatus(proposalId: string): {
   const [collectionFinishedResponse, setCollectionFinishedResponse] = useState<boolean | undefined>()
   const [loading, setLoading] = useState<boolean>(true)
 
-  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
+  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
   const transactions = useAppSelector((state) => state.transactions)
+  const contract = useContract(
+    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
+    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
+  )
 
   useEffect(() => {
     if (contract && proposalId) {
@@ -418,7 +427,12 @@ export function useQueueCallback(): (
   proposalId: string | undefined,
   proposalExecutionData: ProposalExecutionData | undefined
 ) => undefined | Promise<string> {
-  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
+  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
+
+  const contract = useContract(
+    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
+    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
+  )
   const addTransaction = useTransactionAdder()
 
   return useCallback(
@@ -449,7 +463,12 @@ export function useExecuteCallback(): (
   proposalId: string | undefined,
   proposalExecutionData: ProposalExecutionData | undefined
 ) => undefined | Promise<string> {
-  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI)
+  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
+
+  const contract = useContract(
+    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
+    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
+  )
   const addTransaction = useTransactionAdder()
 
   return useCallback(
