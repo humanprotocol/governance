@@ -546,12 +546,7 @@ export default function VotePage() {
               <Trans>Description</Trans>
             </ThemedText.SubHeaderLarge>
             <MarkDownWrapper>
-              <ReactMarkdown
-                source={markdownContent}
-                renderers={{
-                  image: MarkdownImage,
-                }}
-              />
+              <ReactMarkdown components={{ image: MarkdownImage }}>{markdownContent}</ReactMarkdown>
             </MarkDownWrapper>
           </AutoColumn>
           <AutoColumn gap="md">
@@ -565,7 +560,7 @@ export default function VotePage() {
                   : ''
               }
             >
-              <ReactMarkdown source={proposalDetails?.proposer} />
+              <ReactMarkdown>{proposalDetails?.proposer}</ReactMarkdown>
             </ProposerAddressLink>
           </AutoColumn>
         </ProposalInfo>
