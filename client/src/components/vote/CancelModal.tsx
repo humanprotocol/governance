@@ -84,7 +84,7 @@ export default function CancelModal({ isOpen, onDismiss, proposalId, proposalExe
       const hash = await cancelCallback(proposalId, proposalExecutionData, amount)
       setHash(hash)
     } catch (error) {
-      setError('Tx failed, try increasing amount sent')
+      setError('Tx failed, try changing the amount')
       setAttempting(false)
       console.log(error)
     }
@@ -108,6 +108,7 @@ export default function CancelModal({ isOpen, onDismiss, proposalId, proposalExe
               </ThemedText.DeprecatedMediumHeader>
               <NumericalInput value={amount} onUserInput={handleInputChange} />
             </RowBetween>
+            {error && <ThemedText.DeprecatedSubHeader color="accentFailure">{error}</ThemedText.DeprecatedSubHeader>}
             <ButtonPrimary onClick={onCancelProposal}>
               <ThemedText.DeprecatedMediumHeader color="white">
                 <Trans>Cancel proposal</Trans>

@@ -357,21 +357,6 @@ export default function VotePage() {
     }
   }, [proposalDetails?.description])
 
-  const handleCancelProposal = async () => {
-    if (cancelCallback && !isCancelling) {
-      setIsCancelling(true)
-      try {
-        const hash = await cancelCallback(proposalDetails?.proposalId, executionData)
-        console.log('Cancel transaction submitted', { hash })
-        setStatus(ProposalState.CANCELED)
-      } catch (error) {
-        console.error(error)
-      } finally {
-        setIsCancelling(false)
-      }
-    }
-  }
-
   if (!proposalDetails) return null
 
   return (
@@ -484,7 +469,7 @@ export default function VotePage() {
           )}
 
           {showCancelButton && (
-            <ButtonPrimary onClick={handleCancelProposal} disabled={!cancelCallback || isCancelling}>
+            <ButtonPrimary onClick={() => toggleCancelModal()} disabled={!cancelCallback || isCancelling}>
               <Trans>Cancel</Trans>
             </ButtonPrimary>
           )}

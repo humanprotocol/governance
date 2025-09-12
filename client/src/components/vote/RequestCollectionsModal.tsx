@@ -83,7 +83,7 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
       const hash = await requestCollectionsCallback(proposalId, amount)
       setHash(hash)
     } catch (error) {
-      setError('Tx failed, try increasing amount sent')
+      setError('Tx failed, try changing the amount')
       setAttempting(false)
       console.log(error)
     }
@@ -107,6 +107,7 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
               </ThemedText.DeprecatedMediumHeader>
               <NumericalInput value={amount} onUserInput={handleInputChange} />
             </RowBetween>
+            {error && <ThemedText.DeprecatedSubHeader color="accentFailure">{error}</ThemedText.DeprecatedSubHeader>}
             <ButtonPrimary onClick={onRequestCollections}>
               <ThemedText.DeprecatedMediumHeader color="white">
                 <Trans>Request collections</Trans>
