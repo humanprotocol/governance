@@ -198,7 +198,6 @@ export default function VotePage() {
   const [status, setStatus] = useState<ProposalState>(ProposalState.UNDETERMINED)
   const [executionData, setExecutionData] = useState<ProposalExecutionData | undefined>(undefined)
   const [markdownContent, setMarkdownContent] = useState('')
-  const [isCancelling, setIsCancelling] = useState(false)
 
   // modal for casting votes
   const showVoteModal = useModalIsOpen(ApplicationModal.VOTE)
@@ -469,7 +468,7 @@ export default function VotePage() {
           )}
 
           {showCancelButton && (
-            <ButtonPrimary onClick={() => toggleCancelModal()} disabled={!cancelCallback || isCancelling}>
+            <ButtonPrimary onClick={() => toggleCancelModal()} disabled={!cancelCallback}>
               <Trans>Cancel</Trans>
             </ButtonPrimary>
           )}
