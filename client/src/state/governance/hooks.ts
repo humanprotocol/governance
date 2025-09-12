@@ -2,7 +2,7 @@ import { isAddress } from '@ethersproject/address'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
-import { formatEther } from '@ethersproject/units'
+import { formatEther, parseEther } from '@ethersproject/units'
 import GOVERNOR_SPOKE_ABI from '@human-protocol/core/artifacts/contracts/governance/DAOSpokeContract.sol/DAOSpokeContract.json'
 import GOVERNOR_HUB_ABI from '@human-protocol/core/artifacts/contracts/governance/MetaHumanGovernor.sol/MetaHumanGovernor.json'
 import { t } from '@lingui/macro'
@@ -298,71 +298,59 @@ export function useVoteCallback(): (
     (proposalId: string | undefined, voteOption: VoteOption) => {
       if (!account || !contract || !proposalId || !chainId) return
       const args = [proposalId, voteOption === VoteOption.Against ? 0 : voteOption === VoteOption.For ? 1 : 2]
-      return contract.estimateGas.castVote(...args, {}).then((estimatedGasLimit) => {
-        return contract
-          .castVote(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              type: TransactionType.VOTE,
-              decision: voteOption,
-              governorAddress: contract.address,
-              proposalId: parseInt(proposalId),
-              reason: '',
-            })
-            return response.hash
-          })
+      return contract.castVote(...args, { value: null }).then((response: TransactionResponse) => {
+        addTransaction(response, {
+          type: TransactionType.VOTE,
+          decision: voteOption,
+          governorAddress: contract.address,
+          proposalId: parseInt(proposalId),
+          reason: '',
+        })
+        return response.hash
       })
     },
     [account, addTransaction, contract, chainId]
   )
 }
 
-export function useRequestCollections(): (proposalId: string | undefined) => undefined | Promise<string> {
+export function useRequestCollections(): (
+  proposalId: string | undefined,
+  value?: number
+) => undefined | Promise<string> {
   const { account, chainId } = useWeb3React()
-  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
-
-  const contract = useContract(
-    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
-    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
-  )
+  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI.abi)
   const addTransaction = useTransactionAdder()
 
   return useCallback(
-    (proposalId: string | undefined) => {
+    (proposalId: string | undefined, value?: number) => {
+      const amount = value ?? 0.05
       if (!account || !contract || !proposalId || !chainId) return
-      const args = [proposalId]
-      return contract.estimateGas.requestCollections(...args, {}).then((estimatedGasLimit) => {
-        return contract
-          .requestCollections(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              type: TransactionType.REQUEST_COLLECTIONS,
-              governorAddress: contract.address,
-              proposalId: parseInt(proposalId),
-            })
-            return response.hash
+      return contract
+        .requestCollections(proposalId, { value: parseEther(amount.toString()) })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            type: TransactionType.REQUEST_COLLECTIONS,
+            governorAddress: contract.address,
+            proposalId: parseInt(proposalId),
           })
-      })
+          return response.hash
+        })
     },
     [account, addTransaction, contract, chainId]
   )
 }
 
 export function useCollectionStatus(proposalId: string): {
-  collectionStartedResponse: boolean | undefined
-  collectionFinishedResponse: boolean | undefined
+  collectionStartedResponse: boolean
+  collectionFinishedResponse: boolean
   loading: boolean
 } {
-  const [collectionStartedResponse, setCollectionStartedResponse] = useState<boolean | undefined>()
-  const [collectionFinishedResponse, setCollectionFinishedResponse] = useState<boolean | undefined>()
+  const [collectionStartedResponse, setCollectionStartedResponse] = useState<boolean>(false)
+  const [collectionFinishedResponse, setCollectionFinishedResponse] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(true)
 
-  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
   const transactions = useAppSelector((state) => state.transactions)
-  const contract = useContract(
-    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
-    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
-  )
+  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI.abi)
 
   useEffect(() => {
     if (contract && proposalId) {
@@ -389,37 +377,31 @@ export function useCollectionStatus(proposalId: string): {
 
 export function useCancelCallback(): (
   proposalId: string | undefined,
-  proposalExecutionData: ProposalExecutionData | undefined
+  proposalExecutionData: ProposalExecutionData | undefined,
+  value?: number
 ) => undefined | Promise<string> {
   const { account, chainId } = useWeb3React()
-  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
 
-  const contract = useContract(
-    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
-    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
-  )
+  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI.abi)
   const addTransaction = useTransactionAdder()
 
   return useCallback(
-    (proposalId: string | undefined, proposalExecutionData: ProposalExecutionData | undefined) => {
+    (proposalId: string | undefined, proposalExecutionData: ProposalExecutionData | undefined, value?: number) => {
+      const amount = value ?? 0.025
       if (!contract || !proposalId) return
       const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
-      const args = [targets, values, calldatas, descriptionHash]
-
-      return contract.estimateGas.crossChainCancel(...args, {}).then((estimatedGasLimit) => {
-        return contract
-          .crossChainCancel(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              type: TransactionType.CANCEL,
-              governorAddress: contract.address,
-              proposalId: parseInt(proposalId),
-            })
-            return response.hash
+      return contract
+        .crossChainCancel(targets, values, calldatas, descriptionHash, { value: parseEther(amount.toString()) })
+        .then((response: TransactionResponse) => {
+          addTransaction(response, {
+            type: TransactionType.CANCEL,
+            governorAddress: contract.address,
+            proposalId: parseInt(proposalId),
           })
-      })
+          return response.hash
+        })
     },
-    [addTransaction, contract, account, chainId, isHubChainActive]
+    [addTransaction, contract, account, chainId]
   )
 }
 
@@ -427,12 +409,7 @@ export function useQueueCallback(): (
   proposalId: string | undefined,
   proposalExecutionData: ProposalExecutionData | undefined
 ) => undefined | Promise<string> {
-  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
-
-  const contract = useContract(
-    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
-    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
-  )
+  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI.abi)
   const addTransaction = useTransactionAdder()
 
   return useCallback(
@@ -440,19 +417,13 @@ export function useQueueCallback(): (
       const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
 
       if (!contract || !proposalId) return
-      const args = [targets, values, calldatas, descriptionHash]
-
-      return contract.estimateGas.queue(...args, {}).then((estimatedGasLimit) => {
-        return contract
-          .queue(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              type: TransactionType.QUEUE,
-              governorAddress: contract.address,
-              proposalId: parseInt(proposalId),
-            })
-            return response.hash
-          })
+      return contract.queue(targets, values, calldatas, descriptionHash).then((response: TransactionResponse) => {
+        addTransaction(response, {
+          type: TransactionType.QUEUE,
+          governorAddress: contract.address,
+          proposalId: parseInt(proposalId),
+        })
+        return response.hash
       })
     },
     [addTransaction, contract]
@@ -463,12 +434,7 @@ export function useExecuteCallback(): (
   proposalId: string | undefined,
   proposalExecutionData: ProposalExecutionData | undefined
 ) => undefined | Promise<string> {
-  const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
-
-  const contract = useContract(
-    isHubChainActive ? GOVERNANCE_HUB_ADDRESS : GOVERNANCE_SPOKE_ADRESSES,
-    isHubChainActive ? GOVERNOR_HUB_ABI.abi : GOVERNOR_SPOKE_ABI.abi
-  )
+  const contract = useContract(GOVERNANCE_HUB_ADDRESS, GOVERNOR_HUB_ABI.abi)
   const addTransaction = useTransactionAdder()
 
   return useCallback(
@@ -476,18 +442,13 @@ export function useExecuteCallback(): (
       const { targets, values, calldatas, descriptionHash } = proposalExecutionData || {}
 
       if (!contract || !proposalId) return
-      const args = [targets, values, calldatas, descriptionHash]
-      return contract.estimateGas.execute(...args, {}).then((estimatedGasLimit) => {
-        return contract
-          .execute(...args, { value: null, gasLimit: calculateGasMargin(estimatedGasLimit) })
-          .then((response: TransactionResponse) => {
-            addTransaction(response, {
-              type: TransactionType.EXECUTE,
-              governorAddress: contract.address,
-              proposalId: parseInt(proposalId),
-            })
-            return response.hash
-          })
+      return contract.execute(targets, values, calldatas, descriptionHash).then((response: TransactionResponse) => {
+        addTransaction(response, {
+          type: TransactionType.EXECUTE,
+          governorAddress: contract.address,
+          proposalId: parseInt(proposalId),
+        })
+        return response.hash
       })
     },
     [addTransaction, contract]
