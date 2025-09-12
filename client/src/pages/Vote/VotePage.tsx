@@ -5,6 +5,7 @@ import { formatEther } from '@ethersproject/units'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
+import CancelModal from 'components/vote/CancelModal'
 import ExecuteModal from 'components/vote/ExecuteModal'
 import QueueModal from 'components/vote/QueueModal'
 import RequestCollectionsModal from 'components/vote/RequestCollectionsModal'
@@ -32,6 +33,7 @@ import { ZERO_ADDRESS } from '../../constants/misc'
 import { UNI } from '../../constants/tokens'
 import {
   useModalIsOpen,
+  useToggleCancelModal,
   useToggleDelegateModal,
   useToggleExecuteModal,
   useToggleQueueModal,
@@ -201,6 +203,9 @@ export default function VotePage() {
   // modal for casting votes
   const showVoteModal = useModalIsOpen(ApplicationModal.VOTE)
   const toggleVoteModal = useToggleVoteModal()
+
+  const showCancelModal = useModalIsOpen(ApplicationModal.CANCEL)
+  const toggleCancelModal = useToggleCancelModal()
 
   // toggle for showing delegation modal
   const showDelegateModal = useModalIsOpen(ApplicationModal.DELEGATE)
@@ -372,6 +377,12 @@ export default function VotePage() {
   return (
     <>
       <PageWrapper gap="lg" justify="center">
+        <CancelModal
+          isOpen={showCancelModal}
+          onDismiss={toggleCancelModal}
+          proposalId={proposalDetails?.proposalId}
+          proposalExecutionData={executionData}
+        />
         <VoteModal
           isOpen={showVoteModal}
           onDismiss={toggleVoteModal}

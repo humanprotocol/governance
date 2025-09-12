@@ -7,7 +7,7 @@ import { ArrowUpCircle, X } from 'react-feather'
 import styled, { useTheme } from 'styled-components/macro'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { useRequestCollections } from '../../state/governance/hooks'
+import { ProposalExecutionData, useCancelCallback } from '../../state/governance/hooks'
 import { CustomLightSpinner, ThemedText } from '../../theme'
 import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
@@ -37,21 +37,22 @@ const ConfirmedIcon = styled(ColumnCenter)`
   padding-top: 16px;
 `
 
-interface RequestCollectionsModalProps {
+interface CancelModalProps {
   isOpen: boolean
   onDismiss: () => void
   proposalId: string | undefined // id for the proposal to queue
+  proposalExecutionData: ProposalExecutionData | undefined
 }
 
-export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId }: RequestCollectionsModalProps) {
+export default function CancelModal({ isOpen, onDismiss, proposalId, proposalExecutionData }: CancelModalProps) {
   const { chainId } = useWeb3React()
-  const requestCollectionsCallback = useRequestCollections()
+  const cancelCallback = useCancelCallback()
   const isMobile = useIsMobile()
 
   // monitor call to help UI loading state
   const [hash, setHash] = useState<string | undefined>()
   const [attempting, setAttempting] = useState<boolean>(false)
-  const [amount, setAmount] = useState(0.05)
+  const [amount, setAmount] = useState(0.025)
   const [error, setError] = useState('')
 
   // get theme for colors
@@ -71,16 +72,16 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
     setAmount(Number(input))
   }
 
-  async function onRequestCollections() {
+  async function onCancelProposal() {
     setError('')
     setAttempting(true)
 
     // if callback not returned properly ignore
-    if (!requestCollectionsCallback) return
+    if (!cancelCallback) return
 
     // try delegation and store hash
     try {
-      const hash = await requestCollectionsCallback(proposalId, amount)
+      const hash = await cancelCallback(proposalId, proposalExecutionData, amount)
       setHash(hash)
     } catch (error) {
       setError('Tx failed, try increasing amount sent')
@@ -97,7 +98,7 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
           <AutoColumn gap="lg" justify="center">
             <RowBetween>
               <ThemedText.DeprecatedMediumHeader fontWeight={500}>
-                <Trans>Request Collections</Trans>
+                <Trans>Cancel Proposal</Trans>
               </ThemedText.DeprecatedMediumHeader>
               <StyledClosed onClick={wrappedOnDismiss} />
             </RowBetween>
@@ -107,9 +108,9 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
               </ThemedText.DeprecatedMediumHeader>
               <NumericalInput value={amount} onUserInput={handleInputChange} />
             </RowBetween>
-            <ButtonPrimary onClick={onRequestCollections}>
+            <ButtonPrimary onClick={onCancelProposal}>
               <ThemedText.DeprecatedMediumHeader color="white">
-                <Trans>Request collections</Trans>
+                <Trans>Cancel proposal</Trans>
               </ThemedText.DeprecatedMediumHeader>
             </ButtonPrimary>
           </AutoColumn>
