@@ -77,19 +77,11 @@ module.exports = [
 > [!NOTE]
 > Follow the **README** in ```/client``` directory 
 
-## Key Components
-### Client
-
-> [!IMPORTANT]  
-> Fill out the .env variables following .env.example 
-> Fill out the ```.env``` variables following ```.env.example```
-> Follow the README in ```/client``` directory 
-
-
 - **Proposal List & Details**: View and understand proposals, their statuses, and details.
 - **Voting**: Participate in governance by voting on proposals using either hub or spoke chain tokens.
 
 ### Server (Vote Aggregator)
+
 > [!NOTE]
 > Follow the **README** in ```/server``` directory 
 
@@ -115,5 +107,4 @@ The governance UI ```/client``` requires Node.js version 22. To ensure you have 
 - Check using ```nvm --version```
 
 ### LICENSE 
-
 Refer to the LICENSE in the project. 
