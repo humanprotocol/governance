@@ -5,7 +5,14 @@ export interface Proposal {
   title: string
 }
 
-export interface ProposalDetails {
+export interface ProposalExecutionData {
+  targets: string[]
+  values: string[]
+  calldatas: string[]
+  descriptionHash: string
+}
+
+export interface ProposalDetails extends ProposalExecutionData {
   proposalId: string
   title: string
   description: string

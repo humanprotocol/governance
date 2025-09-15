@@ -1,6 +1,4 @@
 import { BigNumber } from '@ethersproject/bignumber'
-import { keccak256 } from '@ethersproject/keccak256'
-import { toUtf8Bytes } from '@ethersproject/strings'
 import { formatEther } from '@ethersproject/units'
 import { Trans } from '@lingui/macro'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -42,7 +40,6 @@ import {
 } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
 import {
-  ProposalExecutionData,
   ProposalState,
   useCancelCallback,
   useCollectionStatus,
@@ -196,7 +193,6 @@ export default function VotePage() {
   // update vote option based on button interactions
   const [voteOption, setVoteOption] = useState<VoteOption | undefined>(undefined)
   const [status, setStatus] = useState<ProposalState>(ProposalState.UNDETERMINED)
-  const [executionData, setExecutionData] = useState<ProposalExecutionData | undefined>(undefined)
   const [markdownContent, setMarkdownContent] = useState('')
 
   // modal for casting votes
@@ -290,6 +286,13 @@ export default function VotePage() {
     uniBalance && JSBI.notEqual(uniBalance.quotient, JSBI.BigInt(0)) && userDelegatee === ZERO_ADDRESS
   )
 
+  const executionData = {
+    targets: proposalDetails?.targets ?? [],
+    values: proposalDetails?.values ?? [],
+    calldatas: proposalDetails?.calldatas ?? [],
+    descriptionHash: proposalDetails?.descriptionHash ?? '',
+  }
+
   useEffect(() => {
     async function getProposalStatus() {
       if (id && govHubContract) {
@@ -300,29 +303,6 @@ export default function VotePage() {
 
     getProposalStatus()
   }, [id, govHubContract])
-
-  useEffect(() => {
-    async function getProposalExecutionData() {
-      if (govHubContract) {
-        const filter = govHubContract.filters.ProposalCreated()
-        const events = await govHubContract.queryFilter(filter)
-        if (events.length > 0) {
-          const event = events.find((event) => event.args?.proposalId.toString() === id)
-          const args = event?.args
-          if (args) {
-            setExecutionData({
-              targets: args?.targets,
-              values: args?.[3],
-              calldatas: args?.calldatas,
-              descriptionHash: keccak256(toUtf8Bytes(args?.description)),
-            })
-          }
-        }
-      }
-    }
-
-    getProposalExecutionData()
-  }, [govHubContract, id])
 
   useEffect(() => {
     const checkAndFetchMarkdown = async () => {

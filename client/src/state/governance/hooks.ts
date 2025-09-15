@@ -10,7 +10,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import HmtUniJSON from 'abis/HMToken.json'
 import UniJSON from 'abis/VHMToken.json'
-import { fetchProposalDetails, fetchProposals, Proposal, ProposalDetails } from 'api/proposals'
+import { fetchProposalDetails, fetchProposals, Proposal, ProposalDetails, ProposalExecutionData } from 'api/proposals'
 import { fetchVotes } from 'api/votes'
 import { GOVERNANCE_HUB_ADDRESS, GOVERNANCE_SPOKE_ADRESSES } from 'constants/addresses'
 import { HUB_CHAIN_ID } from 'constants/addresses'
@@ -80,13 +80,6 @@ export function useHMTUniContract() {
   const hmtUniContract = useContract(underlyingAddress, HmtUniJSON.abi, true)
 
   return { hmtUniContract, loading, handleSetHMTLoading }
-}
-
-export interface ProposalExecutionData {
-  targets: string[]
-  values: string[]
-  calldatas: string[]
-  descriptionHash: string
 }
 
 export interface ProposalData {
