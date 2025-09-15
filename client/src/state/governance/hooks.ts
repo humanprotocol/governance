@@ -220,26 +220,30 @@ export function useUserVotes(): { availableVotes: CurrencyAmount<Token> | undefi
 }
 
 // fetch available votes as of block (usually proposal start block)
-export function useUserVotesAsOfBlock(block: number | undefined, id: string): CurrencyAmount<Token> | undefined {
+export function useUserVotesAsOfBlock(
+  block: number | undefined,
+  id: string,
+  isProposalActive: boolean
+): CurrencyAmount<Token> | undefined {
   const [userVotesAsOfBlockAmount, setUserVotesAsOfBlockAmount] = useState()
 
   const { account, chainId } = useWeb3React()
   const isHubChainActive = useAppSelector((state) => state.application.isHubChainActive)
 
-  const governanceHubContract = useGovernanceHubContract()
-  const governanceSpokeContract = useGovernanceSpokeContract()
+  const hubContract = useGovernanceHubContract()
+  const spokeContract = useGovernanceSpokeContract()
   const spokeVoteTokenContract = useUniContract()
 
   const uni = useMemo(() => (chainId ? UNI[chainId] : undefined), [chainId])
 
   useEffect(() => {
     async function getUserVotesAsOfBlock() {
-      if (isHubChainActive && block) {
+      if (isHubChainActive && block && isProposalActive) {
         const getVotesAsOfBlockResponse =
-          account && (await governanceHubContract?.functions.getVotes(account.toString(), block.toString()))
+          account && (await hubContract?.functions.getVotes(account.toString(), block.toString()))
         setUserVotesAsOfBlockAmount(getVotesAsOfBlockResponse)
-      } else if (!isHubChainActive && governanceSpokeContract) {
-        const { localVoteStart } = await governanceSpokeContract.functions.proposals(id)
+      } else if (!isHubChainActive && spokeContract) {
+        const { localVoteStart } = await spokeContract.functions.proposals(id)
 
         const getVotesAsOfBlockResponse =
           account &&
@@ -249,7 +253,7 @@ export function useUserVotesAsOfBlock(block: number | undefined, id: string): Cu
     }
 
     getUserVotesAsOfBlock()
-  }, [block, isHubChainActive, account, governanceSpokeContract, spokeVoteTokenContract, governanceHubContract, id])
+  }, [block, isHubChainActive, account, hubContract, spokeContract, spokeVoteTokenContract, id, isProposalActive])
 
   return userVotesAsOfBlockAmount && uni ? CurrencyAmount.fromRawAmount(uni, userVotesAsOfBlockAmount) : undefined
 }

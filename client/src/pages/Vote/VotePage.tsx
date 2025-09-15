@@ -245,7 +245,8 @@ export default function VotePage() {
   // only count available votes as of the proposal start block
   const availableVotes: CurrencyAmount<Token> | undefined = useUserVotesAsOfBlock(
     +(proposalDetails?.voteStart || '0') / 1000,
-    id
+    id,
+    status === ProposalState.ACTIVE
   )
 
   // only show voting if user has > 0 votes at proposal start block and proposal is active,
