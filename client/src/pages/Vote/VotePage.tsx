@@ -261,7 +261,10 @@ export default function VotePage() {
   } = useCollectionStatus(id)
 
   const showRequestCollectionsButton = Boolean(
-    isHubChainActive && account && status === ProposalState.SUCCEEDED && !collectionStartedResponse
+    isHubChainActive &&
+      account &&
+      (status === ProposalState.SUCCEEDED || status === ProposalState.DEFEATED) &&
+      !collectionStartedResponse
   )
 
   const showCancelButton = !!account && account === proposalDetails?.proposer && status === ProposalState.PENDING
