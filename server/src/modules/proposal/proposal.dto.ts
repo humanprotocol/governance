@@ -26,4 +26,16 @@ export class ProposalDetailDto extends ProposalDto {
       'Quorum value (string) once voting has started; "0" before start.',
   })
   quorum: string;
+
+  @ApiProperty()
+  targets: string[];
+
+  @ApiProperty()
+  values: string[];
+
+  @ApiProperty()
+  calldatas: string[];
+
+  @ApiProperty()
+  descriptionHash: string;
 }

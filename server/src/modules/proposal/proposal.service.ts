@@ -64,6 +64,11 @@ export class ProposalsService {
       const description = parsed.args.description as string;
       const voteStart = Number(parsed.args.voteStart) * 1000;
       const voteEnd = Number(parsed.args.voteEnd) * 1000;
+      const targets = parsed.args.targets as string[];
+      const rawValues = parsed.args[3] as readonly bigint[] | undefined;
+      const values = (rawValues ?? []).map((v) => v.toString());
+      const calldatas = parsed.args.calldatas as string[];
+      const descriptionHash = ethers.id(parsed.args.description as string);
 
       let title: string;
       let desc: string;
@@ -83,7 +88,12 @@ export class ProposalsService {
         voteStart,
         voteEnd,
         quorum: '0',
+        targets,
+        values,
+        calldatas,
+        descriptionHash,
       };
+      console.log('proposalDetail', proposalDetail);
       proposals.push(proposalDetail);
     }
     return { proposals, latestBlock };
