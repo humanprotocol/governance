@@ -33,6 +33,6 @@ export const SUPPORTED_LOCALES = [
   'zh-CN',
   'zh-TW',
 ]
-export type SupportedLocale = typeof SUPPORTED_LOCALES[number] | 'pseudo'
+export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number] | 'pseudo'
 
 export const DEFAULT_LOCALE: SupportedLocale = 'en-US'

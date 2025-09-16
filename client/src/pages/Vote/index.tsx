@@ -7,7 +7,7 @@ export default function Vote() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route path=":governorIndex/:id" element={<VotePage />} />
+      <Route path="proposal/:id" element={<VotePage />} />
     </Routes>
   )
 }

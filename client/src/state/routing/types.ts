@@ -92,7 +92,7 @@ export class ClassicTrade<
       outputAmount: CurrencyAmount<TOutput>
     }[]
   }) {
-    super(routes)
+    super(routes as any)
     this.blockNumber = blockNumber
     this.gasUseEstimateUSD = gasUseEstimateUSD
   }

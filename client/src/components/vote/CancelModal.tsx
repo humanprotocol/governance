@@ -6,16 +6,16 @@ import { useIsMobile } from 'nft/hooks'
 import { useState } from 'react'
 import { ArrowUpCircle, X } from 'react-feather'
 import styled, { useTheme } from 'styled-components/macro'
-import { shortenString } from 'utils'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { useExecuteCallback } from '../../state/governance/hooks'
+import { useCancelCallback } from '../../state/governance/hooks'
 import { CustomLightSpinner, ThemedText } from '../../theme'
 import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Modal from '../Modal'
+import { Input as NumericalInput } from '../NumericalInput'
 import { RowBetween } from '../Row'
 
 const ContentWrapper = styled(AutoColumn)`
@@ -38,21 +38,23 @@ const ConfirmedIcon = styled(ColumnCenter)`
   padding-top: 16px;
 `
 
-interface ExecuteModalProps {
+interface CancelModalProps {
   isOpen: boolean
   onDismiss: () => void
-  proposalId: string | undefined // id for the proposal to execute
+  proposalId: string | undefined // id for the proposal to queue
   proposalExecutionData: ProposalExecutionData | undefined
 }
 
-export default function ExecuteModal({ isOpen, onDismiss, proposalId, proposalExecutionData }: ExecuteModalProps) {
+export default function CancelModal({ isOpen, onDismiss, proposalId, proposalExecutionData }: CancelModalProps) {
   const { chainId } = useWeb3React()
-  const executeCallback = useExecuteCallback()
+  const cancelCallback = useCancelCallback()
   const isMobile = useIsMobile()
 
   // monitor call to help UI loading state
   const [hash, setHash] = useState<string | undefined>()
   const [attempting, setAttempting] = useState<boolean>(false)
+  const [amount, setAmount] = useState(0.025)
+  const [error, setError] = useState('')
 
   // get theme for colors
   const theme = useTheme()
@@ -64,20 +66,28 @@ export default function ExecuteModal({ isOpen, onDismiss, proposalId, proposalEx
     onDismiss()
   }
 
-  async function onExecute() {
+  const handleInputChange = (input: string) => {
+    if (error) {
+      setError('')
+    }
+    setAmount(Number(input))
+  }
+
+  async function onCancelProposal() {
+    setError('')
     setAttempting(true)
 
     // if callback not returned properly ignore
-    if (!executeCallback) return
+    if (!cancelCallback) return
 
     // try delegation and store hash
-    const hash = await executeCallback(proposalId, proposalExecutionData)?.catch((error) => {
+    try {
+      const hash = await cancelCallback(proposalId, proposalExecutionData, amount)
+      setHash(hash)
+    } catch (error) {
+      setError('Tx failed, try changing the amount')
       setAttempting(false)
       console.log(error)
-    })
-
-    if (hash) {
-      setHash(hash)
     }
   }
 
@@ -89,22 +99,20 @@ export default function ExecuteModal({ isOpen, onDismiss, proposalId, proposalEx
           <AutoColumn gap="lg" justify="center">
             <RowBetween>
               <ThemedText.DeprecatedMediumHeader fontWeight={500}>
-                {proposalId && (
-                  <>
-                    <Trans>Execute Proposal</Trans> {shortenString(proposalId)}
-                  </>
-                )}
+                <Trans>Cancel Proposal</Trans>
               </ThemedText.DeprecatedMediumHeader>
               <StyledClosed onClick={wrappedOnDismiss} />
             </RowBetween>
             <RowBetween>
-              <ThemedText.DeprecatedBody>
-                <Trans>Executing this proposal will enact the calldata on-chain.</Trans>
-              </ThemedText.DeprecatedBody>
+              <ThemedText.DeprecatedMediumHeader fontWeight={500} fontSize={14}>
+                <Trans>Amount in ETH to fund cross-chain operations</Trans>
+              </ThemedText.DeprecatedMediumHeader>
+              <NumericalInput value={amount} onUserInput={handleInputChange} />
             </RowBetween>
-            <ButtonPrimary onClick={onExecute}>
+            {error && <ThemedText.DeprecatedSubHeader color="accentFailure">{error}</ThemedText.DeprecatedSubHeader>}
+            <ButtonPrimary onClick={onCancelProposal}>
               <ThemedText.DeprecatedMediumHeader color="white">
-                <Trans>Execute</Trans>
+                <Trans>Cancel proposal</Trans>
               </ThemedText.DeprecatedMediumHeader>
             </ButtonPrimary>
           </AutoColumn>
@@ -124,12 +132,10 @@ export default function ExecuteModal({ isOpen, onDismiss, proposalId, proposalEx
             <AutoColumn gap="md" justify="center">
               <ThemedText.DeprecatedLargeHeader
                 marginTop={32}
-                width="100%"
-                textAlign="center"
                 fontSize={isMobile ? 20 : 36}
                 fontWeight={isMobile ? 500 : 600}
               >
-                <Trans>Executing</Trans>
+                <Trans>Processing</Trans>
               </ThemedText.DeprecatedLargeHeader>
             </AutoColumn>
             <ThemedText.DeprecatedSubHeader>
@@ -151,13 +157,13 @@ export default function ExecuteModal({ isOpen, onDismiss, proposalId, proposalEx
           <AutoColumn gap={isMobile ? '24px' : '48px'} justify="center">
             <AutoColumn gap="md" justify="center">
               <ThemedText.DeprecatedLargeHeader
-                marginTop={32}
                 width="100%"
                 textAlign="center"
+                marginTop={32}
                 fontSize={isMobile ? 20 : 36}
                 fontWeight={isMobile ? 500 : 600}
               >
-                <Trans>Execution Submitted</Trans>
+                <Trans>Transaction Submitted</Trans>
               </ThemedText.DeprecatedLargeHeader>
             </AutoColumn>
             {chainId && (

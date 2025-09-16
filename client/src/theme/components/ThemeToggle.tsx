@@ -1,5 +1,5 @@
-import { atom } from 'jotai'
-import { atomWithStorage, useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { useCallback, useEffect, useMemo } from 'react'
 import { addMediaQueryListener, removeMediaQueryListener } from 'utils/matchMedia'
 
@@ -20,7 +20,7 @@ const systemThemeAtom = atom<ThemeMode.LIGHT | ThemeMode.DARK>(
 const themeModeAtom = atomWithStorage<ThemeMode>('interface_color_theme', ThemeMode.LIGHT)
 
 export function SystemThemeUpdater() {
-  const setSystemTheme = useUpdateAtom(systemThemeAtom)
+  const setSystemTheme = useSetAtom(systemThemeAtom)
 
   const listener = useCallback(
     (event: MediaQueryListEvent) => {
@@ -46,7 +46,7 @@ export function useIsDarkMode(): boolean {
 
 export function useDarkModeManager(): [boolean, (mode: ThemeMode) => void] {
   const isDarkMode = useIsDarkMode()
-  const setMode = useUpdateAtom(themeModeAtom)
+  const setMode = useSetAtom(themeModeAtom)
 
   return useMemo(() => {
     return [isDarkMode, setMode]

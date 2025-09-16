@@ -71,8 +71,6 @@ module.exports = [
 ``` 
 
 
-
-
 ## Key Components
 ### Client
 
@@ -102,12 +100,11 @@ Encountering issues during the setup or development process is common. Here are 
 
 ### Verifying Node.js Version
 
-The governance UI ```/client``` requires Node.js version 14 due to Uniswap dependencies. To ensure you have the correct version installed, follow these steps:
+The governance UI ```/client``` requires Node.js version 22. To ensure you have the correct version installed, follow these steps:
 
-- Install version 14 by running ```nvm install 14```
-- Switch to version 14 by running ```nvm use 14```
+- Install version 22 by running ```nvm install 22```
+- Switch to version 22 by running ```nvm use 22```
 - Check using ```nvm --version```
 
 ### LICENSE 
-
 Refer to the LICENSE in the project. 

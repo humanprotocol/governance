@@ -191,6 +191,12 @@ interface RequestCollectionsInfo extends BaseTransactionInfo {
   proposalId: number
 }
 
+export interface CancelTransactionInfo extends BaseTransactionInfo {
+  type: TransactionType.CANCEL
+  governorAddress: string
+  proposalId: number
+}
+
 export type TransactionInfo =
   | ApproveTransactionInfo
   | ExactOutputSwapTransactionInfo
@@ -212,6 +218,7 @@ export type TransactionInfo =
   | SubmitProposalTransactionInfo
   | ExchangeCurrency
   | RequestCollectionsInfo
+  | CancelTransactionInfo
 
 export interface TransactionDetails {
   hash: string

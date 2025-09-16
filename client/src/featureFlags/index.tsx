@@ -1,4 +1,5 @@
-import { atomWithStorage, useAtomValue } from 'jotai/utils'
+import { useAtomValue } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { createContext, ReactNode, useContext } from 'react'
 import { useGate } from 'statsig-react'
 export { FeatureFlag } from './flags/featureFlags'

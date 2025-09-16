@@ -141,7 +141,7 @@ export default function App() {
                   </Suspense>
                 }
               />
-              <Route path="/:governorIndex/:id" element={<VotePage />} />
+              <Route path="/proposal/:id" element={<VotePage />} />
               <Route path="/not-found" element={<NotFound />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

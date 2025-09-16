@@ -1,4 +1,5 @@
-import { default as babelExtractor } from '@lingui/cli/api/extractors/babel'
+/// <reference types="node" />
+const babelExtractor = require('@lingui/cli/api/extractors/babel').default
 import { createHash } from 'crypto'
 import { mkdirSync, readFileSync, writeFileSync } from 'fs'
 import * as path from 'path'

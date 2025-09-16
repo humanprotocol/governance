@@ -11,8 +11,6 @@ export enum RouterPreference {
 // internally for token -> USDC trades to get a USD value.
 export const INTERNAL_ROUTER_PREFERENCE_PRICE = 'price' as const
 
-const routers = new Map<SupportedChainId, any>()
-
 export interface GetQuoteArgs {
   tokenInAddress: string
   tokenInChainId: SupportedChainId

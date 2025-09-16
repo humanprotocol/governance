@@ -20,7 +20,7 @@ import ApplicationUpdater from './state/application/updater'
 import ListsUpdater from './state/lists/updater'
 import LogsUpdater from './state/logs/updater'
 import TransactionUpdater from './state/transactions/updater'
-import ThemeProvider, { ThemedGlobalStyle } from './theme'
+import ThemeProvider from './theme'
 import RadialGradientByChainUpdater from './theme/components/RadialGradientByChainUpdater'
 
 if (window.ethereum) {
@@ -55,7 +55,6 @@ createRoot(container).render(
                 <BlockNumberProvider>
                   <Updaters />
                   <ThemeProvider>
-                    <ThemedGlobalStyle />
                     <App />
                   </ThemeProvider>
                 </BlockNumberProvider>

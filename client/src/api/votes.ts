@@ -1,14 +1,14 @@
-const API_URL = process.env.REACT_APP_VOTE_AGGREGATOR_ADDRESS as string
+import { API_URL } from 'api'
 
 export interface ChainVoteData {
-  chain_name: string
-  for: string | number
-  against: string | number
-  abstain: string | number
+  proposalId: string
+  forVotes: number
+  againstVotes: number
+  abstainVotes: number
 }
 
-export async function fetchVotes(proposalId: string): Promise<ChainVoteData[]> {
-  const response = await fetch(API_URL + proposalId)
+export async function fetchVotes(proposalId: string): Promise<ChainVoteData> {
+  const response = await fetch(API_URL + '/votes/' + proposalId)
 
   if (!response.ok) {
     throw new Error(`Failed to fetch votes for proposal: ${proposalId}`)
