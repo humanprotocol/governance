@@ -1,6 +1,3 @@
-/**
- * Error messages related to proposals and votes.
- */
 export enum ErrorProposal {
   NotFound = 'Proposal not found',
   EventNotFound = 'ProposalCreated event not found in contract ABI',

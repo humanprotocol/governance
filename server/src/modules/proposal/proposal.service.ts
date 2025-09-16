@@ -93,7 +93,6 @@ export class ProposalsService {
         calldatas,
         descriptionHash,
       };
-      console.log('proposalDetail', proposalDetail);
       proposals.push(proposalDetail);
     }
     return { proposals, latestBlock };

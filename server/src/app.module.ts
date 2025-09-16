@@ -19,9 +19,6 @@ import { VoteModule } from './modules/vote/vote.module';
   ],
   imports: [
     ConfigModule.forRoot({
-      /**
-       * First value found takes precendece
-       */
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env.local', '.env'],
       validationSchema: envValidator,
     }),

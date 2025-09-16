@@ -79,4 +79,15 @@ export class ServerConfigService {
       .map((addr) => addr.trim())
       .filter((addr) => !!addr);
   }
+
+  /**
+   * Cache TTL for votes (in seconds).
+   */
+  get cacheTtlVotesPending(): number {
+    return +this.configService.get<number>('CACHE_TTL_VOTES_PENDING', 300);
+  }
+
+  get cacheTtlVotesActive(): number {
+    return +this.configService.get<number>('CACHE_TTL_VOTES_ACTIVE', 180);
+  }
 }

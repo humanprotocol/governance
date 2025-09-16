@@ -22,4 +22,7 @@ export const envValidator = Joi.object({
   RPC_URL_POLYGON_AMOY: Joi.string(),
   RPC_URL_SEPOLIA: Joi.string(),
   RPC_URL_BSC_TESTNET: Joi.string(),
+  // Cache TTLs (seconds)
+  CACHE_TTL_VOTES_PENDING: Joi.number().default(300),
+  CACHE_TTL_VOTES_ACTIVE: Joi.number().default(180),
 });

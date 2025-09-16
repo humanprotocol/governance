@@ -23,7 +23,6 @@ export class VoteService {
     let cached = await this.cacheManager.get<VoteTotalDto>(cacheKey);
     if (cached) return cached;
 
-    // Hub chain
     let hubProvider, hubContract;
     try {
       hubProvider = this.web3Service.getProvider(
@@ -45,7 +44,6 @@ export class VoteService {
       throw new NotFoundError(ErrorVote.NotFound, err.stack);
     }
 
-    // If pending, return empty votes
     if (status === ProposalStatus.Pending) {
       const result: VoteTotalDto = {
         proposalId,
@@ -53,16 +51,18 @@ export class VoteService {
         againstVotes: 0,
         abstainVotes: 0,
       };
-      await this.cacheManager.set(cacheKey, result, 300); // 5 minutes for pending proposals
+      await this.cacheManager.set(
+        cacheKey,
+        result,
+        this.serverConfigService.cacheTtlVotesPending,
+      );
       return result;
     }
 
-    //If active, check spoke chains
     let totalFor = 0;
     let totalAgainst = 0;
     let totalAbstain = 0;
 
-    // Hub votes
     let hubVotes;
     try {
       hubVotes = await hubContract.proposalVotes(proposalId);
@@ -73,7 +73,6 @@ export class VoteService {
     totalAbstain += Number(hubVotes.abstainVotes);
     totalAgainst += Number(hubVotes.againstVotes);
 
-    // Spoke votes (only if active)
     if (status === ProposalStatus.Active) {
       for (
         let i = 0;
@@ -112,10 +111,9 @@ export class VoteService {
           againstVotes: totalAgainst,
           abstainVotes: totalAbstain,
         },
-        180, // 3 minutes for active proposals
+        this.serverConfigService.cacheTtlVotesActive,
       );
     } else {
-      // Other statuses (succeeded, defeated, etc.) check only hub votes
       await this.cacheManager.set(
         cacheKey,
         {

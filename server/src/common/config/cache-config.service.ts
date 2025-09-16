@@ -24,7 +24,7 @@ export class CacheConfigService {
   /**
    * The DB number of the Redis cache server
    */
-  get cacheDbNumber(): number {
+  get cacheDatabase(): number {
     return this.configService.get<number>('REDIS_DB', 0);
   }
 }

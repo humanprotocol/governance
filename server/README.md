@@ -51,17 +51,6 @@ RPC_URL_BSC_TESTNET=https://...
 - **GET /votes/:proposalId/total**  
   Returns the total votes (for, against, abstain) for a proposal, aggregated from the hub and all spokes.
 
-#### Example response
-
-```json
-{
-  "proposalId": "123",
-  "forVotes": 100,
-  "againstVotes": 200,
-  "abstainVotes": 300
-}
-```
-
 ## Hub-and-Spoke Model
 
 - The hub chain stores the original proposal data.
@@ -72,8 +61,8 @@ RPC_URL_BSC_TESTNET=https://...
 
 1. Clone the repository:  
    `git clone https://github.com/humanprotocol/governance.git`
-2. Navigate to the server-v2 directory:  
-   `cd server-v2`
+2. Navigate to the server directory:  
+   `cd server`
 3. Create and configure your `.env` file as described above.
 4. Install dependencies:  
    `yarn install`

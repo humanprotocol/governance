@@ -1,24 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ProposalDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'Unique identifier of the proposal (string).' })
   proposalId: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Human-readable title of the proposal.' })
   title: string;
 }
 
 export class ProposalDetailDto extends ProposalDto {
-  @ApiProperty()
+  @ApiProperty({ description: 'Description of the proposal.' })
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Address of the account that created the proposal.',
+  })
   proposer: string;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Timestamp (epoch) when voting starts.' })
   voteStart: number;
 
-  @ApiProperty()
+  @ApiProperty({ description: 'Timestamp (epoch) when voting ends.' })
   voteEnd: number;
 
   @ApiProperty({
@@ -27,15 +29,24 @@ export class ProposalDetailDto extends ProposalDto {
   })
   quorum: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Target contract addresses for proposal execution.',
+  })
   targets: string[];
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'ETH values (in wei) sent with each call, as strings.',
+  })
   values: string[];
 
-  @ApiProperty()
+  @ApiProperty({
+    description: 'Calldata payloads (hex-encoded) for each call.',
+  })
   calldatas: string[];
 
-  @ApiProperty()
+  @ApiProperty({
+    description:
+      'EIP-712 hash of the proposal description used for identification.',
+  })
   descriptionHash: string;
 }
