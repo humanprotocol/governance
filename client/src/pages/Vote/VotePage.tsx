@@ -254,6 +254,12 @@ export default function VotePage() {
     !!account &&
     !hasVoted
 
+  console.log('availableVotes', availableVotes)
+  console.log(
+    'JSBI.greaterThan(availableVotes.quotient, JSBI.BigInt(0))',
+    JSBI.greaterThan(availableVotes?.quotient ?? JSBI.BigInt(0), JSBI.BigInt(0))
+  )
+
   const {
     collectionStartedResponse,
     collectionFinishedResponse,
@@ -405,7 +411,7 @@ export default function VotePage() {
                 <Box>
                   <WarningCircleIcon />
                 </Box>
-                Only vHMT votes that were self delegated before {endDate} are eligible for voting.
+                Only vHMT votes that were self delegated before {startDate} are eligible for voting.
                 {showLinkForUnlock && (
                   <span>
                     <Trans>
