@@ -73,7 +73,18 @@ export class VoteService {
     totalAbstain += Number(hubVotes.abstainVotes);
     totalAgainst += Number(hubVotes.againstVotes);
 
-    if (status === ProposalStatus.Active) {
+    let collectionFinished = false;
+    try {
+      collectionFinished = await hubContract.collectionFinished(proposalId);
+    } catch {}
+
+    const shouldQuerySpokes =
+      status === ProposalStatus.Active ||
+      ((status === ProposalStatus.Succeeded ||
+        status === ProposalStatus.Defeated) &&
+        !collectionFinished);
+
+    if (shouldQuerySpokes) {
       for (
         let i = 0;
         i < this.serverConfigService.governanceSpokeChainIds.length;
