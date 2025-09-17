@@ -390,27 +390,22 @@ export default function VotePage() {
             <ThemedText.SubHeaderLarge style={{ marginBottom: '.5rem' }}>
               {proposalDetails?.title}
             </ThemedText.SubHeaderLarge>
-            <RowBetween>
-              <ThemedText.DeprecatedMain>
-                {proposalDetails?.voteStart > now && status === ProposalState.PENDING ? (
-                  <Trans>Voting starts approximately {startDate}</Trans>
-                ) : null}
-              </ThemedText.DeprecatedMain>
-            </RowBetween>
-            <RowBetween>
-              <ThemedText.DeprecatedMain>
-                {proposalDetails?.voteEnd > now && status === ProposalState.ACTIVE ? (
-                  <Trans>Voting ends approximately {endDate}</Trans>
-                ) : null}
-              </ThemedText.DeprecatedMain>
-            </RowBetween>
+            {proposalDetails?.voteStart > now && status === ProposalState.PENDING && (
+              <RowBetween>
+                <ThemedText.DeprecatedMain>Voting starts approximately {startDate}</ThemedText.DeprecatedMain>
+              </RowBetween>
+            )}
+            {proposalDetails?.voteEnd > now && status === ProposalState.ACTIVE && (
+              <RowBetween>
+                <ThemedText.DeprecatedMain>Voting ends approximately {endDate}</ThemedText.DeprecatedMain>
+              </RowBetween>
+            )}
             {proposalDetails && status === ProposalState.ACTIVE && !showVotingButtons && !hasVoted && account && (
               <GrayCard>
                 <Box>
                   <WarningCircleIcon />
                 </Box>
-                Only vHMT votes that were self delegated before block {+proposalDetails.voteStart / 1000} are eligible
-                for voting.
+                Only vHMT votes that were self delegated before block {endDate} are eligible for voting.
                 {showLinkForUnlock && (
                   <span>
                     <Trans>
