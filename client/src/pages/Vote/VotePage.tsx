@@ -405,7 +405,7 @@ export default function VotePage() {
                 <Box>
                   <WarningCircleIcon />
                 </Box>
-                Only vHMT votes that were self delegated before block {endDate} are eligible for voting.
+                Only vHMT votes that were self delegated before {endDate} are eligible for voting.
                 {showLinkForUnlock && (
                   <span>
                     <Trans>
