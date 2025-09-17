@@ -254,12 +254,6 @@ export default function VotePage() {
     !!account &&
     !hasVoted
 
-  console.log('availableVotes', availableVotes)
-  console.log(
-    'JSBI.greaterThan(availableVotes.quotient, JSBI.BigInt(0))',
-    JSBI.greaterThan(availableVotes?.quotient ?? JSBI.BigInt(0), JSBI.BigInt(0))
-  )
-
   const {
     collectionStartedResponse,
     collectionFinishedResponse,
