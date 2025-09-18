@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter as IExceptionFilter,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { ValidationError, NotFoundError, ServerError } from '../errors';
@@ -14,7 +15,10 @@ export class ExceptionFilter implements IExceptionFilter {
   private getStatus(exception: any): number {
     if (exception instanceof ValidationError) {
       return HttpStatus.BAD_REQUEST;
-    } else if (exception instanceof NotFoundError) {
+    } else if (
+      exception instanceof NotFoundError ||
+      exception instanceof NotFoundException
+    ) {
       return HttpStatus.NOT_FOUND;
     } else if (exception instanceof ServerError) {
       return HttpStatus.UNPROCESSABLE_ENTITY;
