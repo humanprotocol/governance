@@ -27,7 +27,7 @@ const defaultLogger = createLogger(
   },
   {
     environment: Environment.name,
-    service: 'human-app',
+    service: 'governance-server',
     version: Environment.version,
   },
 );
