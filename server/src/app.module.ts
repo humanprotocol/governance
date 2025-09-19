@@ -31,8 +31,8 @@ import { VoteModule } from './modules/vote/vote.module';
     ThrottlerModule.forRoot({
       throttlers: [
         {
-          ttl: 60000,
-          limit: 6,
+          ttl: 2000,
+          limit: 5,
         },
       ],
     }),
