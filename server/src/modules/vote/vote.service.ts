@@ -47,9 +47,9 @@ export class VoteService {
     if (status === ProposalStatus.Pending) {
       const result: VoteTotalDto = {
         proposalId,
-        forVotes: 0,
-        againstVotes: 0,
-        abstainVotes: 0,
+        forVotes: '0',
+        againstVotes: '0',
+        abstainVotes: '0',
       };
       await this.cacheManager.set(
         cacheKey,
@@ -59,9 +59,9 @@ export class VoteService {
       return result;
     }
 
-    let totalFor = 0;
-    let totalAgainst = 0;
-    let totalAbstain = 0;
+    let totalFor: bigint = 0n;
+    let totalAgainst: bigint = 0n;
+    let totalAbstain: bigint = 0n;
 
     let hubVotes;
     try {
@@ -69,9 +69,9 @@ export class VoteService {
     } catch (err: any) {
       throw new ServerError(ErrorVote.HubContractError, err.stack);
     }
-    totalFor += Number(hubVotes.forVotes);
-    totalAbstain += Number(hubVotes.abstainVotes);
-    totalAgainst += Number(hubVotes.againstVotes);
+    totalFor += BigInt(hubVotes.forVotes.toString());
+    totalAbstain += BigInt(hubVotes.abstainVotes.toString());
+    totalAgainst += BigInt(hubVotes.againstVotes.toString());
 
     let collectionFinished = false;
     try {
@@ -109,18 +109,18 @@ export class VoteService {
         } catch (err: any) {
           throw new ServerError(ErrorVote.SpokeContractError, err.stack);
         }
-        totalFor += Number(spokeVotes.forVotes);
-        totalAgainst += Number(spokeVotes.againstVotes);
-        totalAbstain += Number(spokeVotes.abstainVotes);
+        totalFor += BigInt(spokeVotes.forVotes.toString());
+        totalAgainst += BigInt(spokeVotes.againstVotes.toString());
+        totalAbstain += BigInt(spokeVotes.abstainVotes.toString());
       }
 
       await this.cacheManager.set(
         cacheKey,
         {
           proposalId,
-          forVotes: totalFor,
-          againstVotes: totalAgainst,
-          abstainVotes: totalAbstain,
+          forVotes: totalFor.toString(),
+          againstVotes: totalAgainst.toString(),
+          abstainVotes: totalAbstain.toString(),
         },
         this.serverConfigService.cacheTtlVotesActive,
       );
@@ -129,9 +129,9 @@ export class VoteService {
         cacheKey,
         {
           proposalId,
-          forVotes: totalFor,
-          againstVotes: totalAgainst,
-          abstainVotes: totalAbstain,
+          forVotes: totalFor.toString(),
+          againstVotes: totalAgainst.toString(),
+          abstainVotes: totalAbstain.toString(),
         },
         0,
       );
@@ -139,9 +139,9 @@ export class VoteService {
 
     return {
       proposalId,
-      forVotes: totalFor,
-      againstVotes: totalAgainst,
-      abstainVotes: totalAbstain,
+      forVotes: totalFor.toString(),
+      againstVotes: totalAgainst.toString(),
+      abstainVotes: totalAbstain.toString(),
     };
   }
 }
