@@ -5,11 +5,11 @@ export class VoteTotalDto {
   proposalId: string;
 
   @ApiProperty({ description: 'Total number of FOR votes aggregated.' })
-  forVotes: number;
+  forVotes: string;
 
   @ApiProperty({ description: 'Total number of AGAINST votes aggregated.' })
-  againstVotes: number;
+  againstVotes: string;
 
   @ApiProperty({ description: 'Total number of ABSTAIN votes aggregated.' })
-  abstainVotes: number;
+  abstainVotes: string;
 }
