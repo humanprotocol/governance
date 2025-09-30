@@ -14,6 +14,7 @@ import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
 import { ButtonPrimary } from '../Button'
 import { AutoColumn, ColumnCenter } from '../Column'
 import Modal from '../Modal'
+import { Input as NumericalInput } from '../NumericalInput'
 import { RowBetween } from '../Row'
 
 const ContentWrapper = styled(AutoColumn)`
@@ -50,6 +51,8 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
   // monitor call to help UI loading state
   const [hash, setHash] = useState<string | undefined>()
   const [attempting, setAttempting] = useState<boolean>(false)
+  const [amount, setAmount] = useState(0.05)
+  const [error, setError] = useState('')
 
   // get theme for colors
   const theme = useTheme()
@@ -61,20 +64,28 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
     onDismiss()
   }
 
+  const handleInputChange = (input: string) => {
+    if (error) {
+      setError('')
+    }
+    setAmount(Number(input))
+  }
+
   async function onRequestCollections() {
+    setError('')
     setAttempting(true)
 
     // if callback not returned properly ignore
     if (!requestCollectionsCallback) return
 
     // try delegation and store hash
-    const hash = await requestCollectionsCallback(proposalId)?.catch((error) => {
+    try {
+      const hash = await requestCollectionsCallback(proposalId, amount)
+      setHash(hash)
+    } catch (error) {
+      setError('Tx failed, try changing the amount')
       setAttempting(false)
       console.log(error)
-    })
-
-    if (hash) {
-      setHash(hash)
     }
   }
 
@@ -90,6 +101,13 @@ export default function RequestCollectionsModal({ isOpen, onDismiss, proposalId 
               </ThemedText.DeprecatedMediumHeader>
               <StyledClosed onClick={wrappedOnDismiss} />
             </RowBetween>
+            <RowBetween>
+              <ThemedText.DeprecatedMediumHeader fontWeight={500} fontSize={14}>
+                <Trans>Amount in ETH to fund cross-chain operations</Trans>
+              </ThemedText.DeprecatedMediumHeader>
+              <NumericalInput value={amount} onUserInput={handleInputChange} />
+            </RowBetween>
+            {error && <ThemedText.DeprecatedSubHeader color="accentFailure">{error}</ThemedText.DeprecatedSubHeader>}
             <ButtonPrimary onClick={onRequestCollections}>
               <ThemedText.DeprecatedMediumHeader color="white">
                 <Trans>Request collections</Trans>

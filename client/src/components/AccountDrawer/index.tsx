@@ -1,8 +1,7 @@
 import { ScrollBarStyles } from 'components/Common'
 import GrayCloseButton from 'components/GrayCloseButton/GrayCloseButton'
 import { useWindowSize } from 'hooks/useWindowSize'
-import { atom } from 'jotai'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { CloseDrawerIcon } from 'nft/components/icons'
 import { useCallback, useEffect, useRef } from 'react'
 import styled from 'styled-components/macro'
@@ -19,14 +18,14 @@ const DRAWER_TOP_MARGIN_MOBILE_WEB = '72px'
 const accountDrawerOpenAtom = atom(false)
 
 export function useToggleAccountDrawer() {
-  const updateAccountDrawerOpen = useUpdateAtom(accountDrawerOpenAtom)
+  const updateAccountDrawerOpen = useSetAtom(accountDrawerOpenAtom)
   return useCallback(() => {
     updateAccountDrawerOpen((open) => !open)
   }, [updateAccountDrawerOpen])
 }
 
 export function useCloseAccountDrawer() {
-  const updateAccountDrawerOpen = useUpdateAtom(accountDrawerOpenAtom)
+  const updateAccountDrawerOpen = useSetAtom(accountDrawerOpenAtom)
   return useCallback(() => updateAccountDrawerOpen(false), [updateAccountDrawerOpen])
 }
 

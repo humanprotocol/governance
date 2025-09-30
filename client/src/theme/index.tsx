@@ -1,5 +1,5 @@
 import { rootCssString } from 'nft/css/cssStringFromTheme'
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { createGlobalStyle, css, ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { useIsDarkMode } from 'theme/components/ThemeToggle'
 
@@ -115,19 +115,13 @@ export function getTheme(darkMode: boolean) {
   }
 }
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const darkMode = useIsDarkMode()
-  const themeObject = useMemo(() => getTheme(darkMode), [darkMode])
-  return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
-}
-
-export const ThemedGlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`
   html {
     color: ${({ theme }) => theme.textPrimary};
     background-color: ${({ theme }) => theme.background} !important;
   }
 
- summary::-webkit-details-marker {
+  summary::-webkit-details-marker {
     display:none;
   }
 
@@ -138,26 +132,18 @@ export const ThemedGlobalStyle = createGlobalStyle`
   :root {
     ${({ theme }) => rootCssString(theme.darkMode)}
   }
-
-  /* SCROLLBAR GLOBAL STYLES */
-  /* * {
-    scrollbar-width: thin;
-    scrollbar-color: #858EC6;
-
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #F9F9F9; 
-    margin-left: 4px;
-    margin-right: 4px;
-}
-
-  *::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  *::-webkit-scrollbar-thumb {
-    background-color: #858EC6;
-    border-radius: 4px;
-  } */
 `
+
+const GlobalStyleProxy: any = GlobalStyle
+const StyledComponentsThemeProviderProxy: any = StyledComponentsThemeProvider
+
+export default function ThemeProvider({ children }: { children: ReactNode }) {
+  const darkMode = useIsDarkMode()
+  const themeObject = useMemo(() => getTheme(darkMode), [darkMode])
+  return (
+    <StyledComponentsThemeProviderProxy theme={themeObject}>
+      <GlobalStyleProxy />
+      {children}
+    </StyledComponentsThemeProviderProxy>
+  )
+}

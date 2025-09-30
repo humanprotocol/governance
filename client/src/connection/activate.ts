@@ -1,7 +1,6 @@
 import { Connection } from 'connection/types'
 import { SupportedChainId } from 'constants/chains'
-import { atom } from 'jotai'
-import { useAtomValue, useUpdateAtom } from 'jotai/utils'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 import { useAppDispatch } from 'state/hooks'
 import { updateSelectedWallet } from 'state/user/reducer'
@@ -23,7 +22,7 @@ const activationStateAtom = atom<ActivationState>(IDLE_ACTIVATION_STATE)
 
 function useTryActivation() {
   const dispatch = useAppDispatch()
-  const setActivationState = useUpdateAtom(activationStateAtom)
+  const setActivationState = useSetAtom(activationStateAtom)
 
   return useCallback(
     async (connection: Connection, onSuccess: () => void, chainId?: SupportedChainId) => {
@@ -62,7 +61,7 @@ function useTryActivation() {
 }
 
 function useCancelActivation() {
-  const setActivationState = useUpdateAtom(activationStateAtom)
+  const setActivationState = useSetAtom(activationStateAtom)
   return useCallback(
     () =>
       setActivationState((activationState) => {

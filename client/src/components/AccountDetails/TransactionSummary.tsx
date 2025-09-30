@@ -10,6 +10,7 @@ import {
   AddLiquidityV2PoolTransactionInfo,
   AddLiquidityV3PoolTransactionInfo,
   ApproveTransactionInfo,
+  CancelTransactionInfo,
   ClaimTransactionInfo,
   CollectFeesTransactionInfo,
   CreateV3PoolTransactionInfo,
@@ -138,6 +139,11 @@ function ExecuteSummary({ info }: { info: ExecuteTransactionInfo }) {
 function DelegateSummary({ info: { delegatee } }: { info: DelegateTransactionInfo }) {
   const { ENSName } = useENSName(delegatee)
   return <Trans>Delegate voting power to {ENSName ?? delegatee}</Trans>
+}
+
+function CancelSummary({ info }: { info: CancelTransactionInfo }) {
+  const proposalKey = `${info.governorAddress}/${info.proposalId}`
+  return <Trans>Cancel proposal {proposalKey}.</Trans>
 }
 
 function WrapSummary({ info: { chainId, currencyAmountRaw, unwrapped } }: { info: WrapTransactionInfo }) {
@@ -370,5 +376,8 @@ export function TransactionSummary({ info }: { info: TransactionInfo }) {
 
     case TransactionType.REQUEST_COLLECTIONS:
       return <RequestCollectionsSummary />
+      
+    case TransactionType.CANCEL:
+      return <CancelSummary info={info} />
   }
 }

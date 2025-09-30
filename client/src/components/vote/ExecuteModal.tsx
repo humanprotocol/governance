@@ -1,5 +1,6 @@
 import { Trans } from '@lingui/macro'
 import { useWeb3React } from '@web3-react/core'
+import { ProposalExecutionData } from 'api/proposals'
 import GrayCloseButton from 'components/GrayCloseButton/GrayCloseButton'
 import { useIsMobile } from 'nft/hooks'
 import { useState } from 'react'
@@ -8,7 +9,7 @@ import styled, { useTheme } from 'styled-components/macro'
 import { shortenString } from 'utils'
 
 import Circle from '../../assets/images/blue-loader.svg'
-import { proposalExecutionData, useExecuteCallback } from '../../state/governance/hooks'
+import { useExecuteCallback } from '../../state/governance/hooks'
 import { CustomLightSpinner, ThemedText } from '../../theme'
 import { ExternalLink } from '../../theme'
 import { ExplorerDataType, getExplorerLink } from '../../utils/getExplorerLink'
@@ -41,7 +42,7 @@ interface ExecuteModalProps {
   isOpen: boolean
   onDismiss: () => void
   proposalId: string | undefined // id for the proposal to execute
-  proposalExecutionData: proposalExecutionData | undefined
+  proposalExecutionData: ProposalExecutionData | undefined
 }
 
 export default function ExecuteModal({ isOpen, onDismiss, proposalId, proposalExecutionData }: ExecuteModalProps) {

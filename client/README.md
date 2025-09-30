@@ -26,9 +26,9 @@ Before you proceed, ensure that you have the following installed:
 
 Please copy or rename `.env.example` to `.env` and fill in all environment variables.
 
-To specify the endpoint from which the application fetches the voting results for each proposal you need to create variable:
+To specify the endpoint from which the application fetches the proposals, proposal details and voting results for each proposal you need to create variable:
 
-- `REACT_APP_VOTE_AGGREGATOR_ADDRESS` - the retrieved data includes counts for "for", "against", and "abstain" votes.
+- `REACT_APP_GOVERNANCE_API_URL` - the retrieved data includes counts for "for", "against", and "abstain" votes.
 
 There can be only one hub chain, defined by four specific environment variables:
 

@@ -23,6 +23,10 @@ export function useCloseModal(): () => void {
   return useCallback(() => dispatch(setOpenModal(null)), [dispatch])
 }
 
+export function useToggleCancelModal(): () => void {
+  return useToggleModal(ApplicationModal.CANCEL)
+}
+
 export function useToggleDelegateModal(): () => void {
   return useToggleModal(ApplicationModal.DELEGATE)
 }

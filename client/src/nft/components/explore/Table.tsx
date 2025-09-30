@@ -161,7 +161,9 @@ export function Table<D extends Record<string, unknown>>({
                       )}
                     </Box>
                     <Box as="span" paddingLeft={column.isSorted ? '18' : '0'}>
-                      {column.render('Header')}
+                      <>
+                        {column.render('Header')}
+                      </>
                     </Box>
                   </StyledHeader>
                 )
@@ -207,7 +209,9 @@ export function Table<D extends Record<string, unknown>>({
                             {cell.render('Cell')}
                           </RankCellContainer>
                         ) : (
-                          cell.render('Cell')
+                          <>
+                            {cell.render('Cell')}
+                          </>
                         )}
                       </td>
                     )
@@ -258,7 +262,9 @@ function LoadingTable({ headerGroups, visibleColumns, ...props }: LoadingTablePr
                       )}
                     </Box>
                     <Box as="span" paddingLeft={column.isSorted ? '18' : '0'}>
-                      {column.render('Header')}
+                      <>
+                        {column.render('Header')}
+                      </>
                     </Box>
                   </StyledHeader>
                 )
