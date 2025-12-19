@@ -12,6 +12,7 @@ import logger from '../../logger';
 @Catch()
 export class ExceptionFilter implements IExceptionFilter {
   private logger = logger.child({ context: ExceptionFilter.name });
+
   private getStatus(exception: any): number {
     if (exception instanceof ValidationError) {
       return HttpStatus.BAD_REQUEST;
@@ -22,10 +23,11 @@ export class ExceptionFilter implements IExceptionFilter {
       return HttpStatus.NOT_FOUND;
     } else if (exception instanceof ServerError) {
       return HttpStatus.UNPROCESSABLE_ENTITY;
-    } else if (exception.statusCode) {
-      return exception.statusCode;
     }
-    return HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const exceptionStatusCode = exception.statusCode || exception.status;
+
+    return exceptionStatusCode || HttpStatus.INTERNAL_SERVER_ERROR;
   }
 
   catch(exception: any, host: ArgumentsHost) {
@@ -36,10 +38,14 @@ export class ExceptionFilter implements IExceptionFilter {
     const status = this.getStatus(exception);
     const message = exception.message || 'Internal server error';
 
-    this.logger.error(
-      `Exception caught: ${message}`,
-      exception.stack || 'No stack trace available',
-    );
+    if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
+      this.logger.error('Unhandled exception', {
+        error: exception,
+        path: request.url,
+      });
+    }
+
+    response.removeHeader('Cache-Control');
 
     response.status(status).json({
       status_code: status,
