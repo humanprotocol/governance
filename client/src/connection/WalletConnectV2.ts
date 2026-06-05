@@ -32,10 +32,6 @@ interface WalletConnectV2ConstructorArgs {
 const parseChainId = (chainId: string | number) =>
   typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 
-type WalletConnectModal = {
-  open?: (options?: { uri?: string; view?: 'ConnectingWalletConnectBasic' }) => Promise<void> | void
-}
-
 export class WalletConnectV2 extends Connector {
   ANALYTICS_EVENT = 'Wallet Connect QR Scan'
   provider: EthereumProvider | undefined = undefined
@@ -101,15 +97,6 @@ export class WalletConnectV2 extends Connector {
     this.actions.update({ accounts })
   }
 
-  private displayUriListener = (uri: string) => {
-    const modal = this.provider?.modal as WalletConnectModal | undefined
-
-    modal?.open?.({
-      uri,
-      view: 'ConnectingWalletConnectBasic',
-    })
-  }
-
   private async initialize(chainId = this.defaultChainId) {
     if (this.eagerConnection) return this.eagerConnection
 
@@ -119,7 +106,6 @@ export class WalletConnectV2 extends Connector {
         .on('disconnect', this.disconnectListener)
         .on('chainChanged', this.chainChangedListener)
         .on('accountsChanged', this.accountsChangedListener)
-        .on('display_uri', this.displayUriListener)
 
       return provider
     })
@@ -172,7 +158,6 @@ export class WalletConnectV2 extends Connector {
       ?.removeListener('disconnect', this.disconnectListener)
       .removeListener('chainChanged', this.chainChangedListener)
       .removeListener('accountsChanged', this.accountsChangedListener)
-      .removeListener('display_uri', this.displayUriListener)
       .disconnect()
 
     this.provider = undefined
