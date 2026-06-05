@@ -37,6 +37,7 @@ export class WalletConnectV2 extends WalletConnect {
         optionalChains: [...L1_CHAIN_IDS, ...L2_CHAIN_IDS],
         showQrModal: qrcode,
         metadata: getWalletConnectMetadata(),
+        telemetryEnabled: false,
         rpcMap: RPC_URLS_WITHOUT_FALLBACKS,
         // as of 6/16/2023 there are no docs for `optionalMethods`
         // this set of optional methods fixes a bug we encountered where permit2 signatures were never received from the connected wallet
@@ -44,7 +45,7 @@ export class WalletConnectV2 extends WalletConnect {
         optionalMethods: ['eth_signTypedData', 'eth_signTypedData_v4', 'eth_sign'],
         qrModalOptions: {
           desktopWallets: undefined,
-          enableExplorer: true,
+          enableExplorer: false,
           explorerExcludedWalletIds: undefined,
           explorerRecommendedWalletIds: undefined,
           mobileWallets: undefined,
