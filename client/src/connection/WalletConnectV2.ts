@@ -4,6 +4,8 @@ import { L1_CHAIN_IDS, L2_CHAIN_IDS } from 'constants/chains'
 
 import { RPC_URLS } from '../constants/networks'
 
+const { createAppKit } = require('@reown/appkit/core')
+
 const getWalletConnectMetadata = () => ({
   name: 'Human Governance',
   description: 'Human Protocol Governance',
@@ -31,6 +33,36 @@ interface WalletConnectV2ConstructorArgs {
 const parseChainId = (chainId: string | number) =>
   typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 
+type WalletConnectProviderWithModal = EthereumProvider & {
+  modal?: unknown
+  rpc: {
+    chains: string[]
+    optionalChains: string[]
+    showQrModal: boolean
+  }
+}
+
+const createAppKitNetwork = (caipNetworkId: string) => {
+  const [chainNamespace, chainId] = caipNetworkId.split(':')
+
+  return {
+    id: chainId,
+    caipNetworkId,
+    chainNamespace,
+    name: '',
+    nativeCurrency: {
+      name: '',
+      symbol: '',
+      decimals: 8,
+    },
+    rpcUrls: {
+      default: {
+        http: ['https://rpc.walletconnect.org/v1'],
+      },
+    },
+  }
+}
+
 export class WalletConnectV2 extends Connector {
   ANALYTICS_EVENT = 'Wallet Connect QR Scan'
   provider: EthereumProvider | undefined = undefined
@@ -54,7 +86,7 @@ export class WalletConnectV2 extends Connector {
       projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID as string,
       chains: [chainId],
       optionalChains: [...L1_CHAIN_IDS, ...L2_CHAIN_IDS],
-      showQrModal: this.qrcode,
+      showQrModal: false,
       metadata: getWalletConnectMetadata(),
       telemetryEnabled: false,
       logger: 'silent',
@@ -65,6 +97,35 @@ export class WalletConnectV2 extends Connector {
       // source: https://uniswapteam.slack.com/archives/C03R5G8T8BH/p1686858618164089?thread_ts=1686778867.145689&cid=C03R5G8T8BH
       optionalMethods: ['eth_signTypedData', 'eth_signTypedData_v4', 'eth_sign'],
     }
+  }
+
+  private attachAppKitModal(provider: EthereumProvider) {
+    if (!this.qrcode) return
+
+    const walletConnectProvider = provider as WalletConnectProviderWithModal
+    const networks = [...new Set([...walletConnectProvider.rpc.chains, ...walletConnectProvider.rpc.optionalChains])]
+      .map(createAppKitNetwork)
+      .filter(Boolean)
+
+    walletConnectProvider.modal = createAppKit({
+      projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID as string,
+      networks,
+      metadata: getWalletConnectMetadata(),
+      universalProvider: provider.signer,
+      manualWCControl: true,
+      enableMobileFullScreen: true,
+      enableEIP6963: false,
+      enableInjected: false,
+      enableCoinbase: true,
+      enableWalletConnect: true,
+      showWallets: true,
+      features: {
+        email: false,
+        socials: false,
+        analytics: false,
+      },
+    })
+    walletConnectProvider.rpc.showQrModal = true
   }
 
   private disconnectListener = (error?: Error) => {
@@ -85,6 +146,7 @@ export class WalletConnectV2 extends Connector {
 
     this.eagerConnection = EthereumProvider.init(this.getProviderOptions(chainId)).then((provider) => {
       this.provider = provider
+      this.attachAppKitModal(provider)
       provider
         .on('disconnect', this.disconnectListener)
         .on('chainChanged', this.chainChangedListener)
