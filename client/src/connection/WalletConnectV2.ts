@@ -1,7 +1,6 @@
 import EthereumProvider, { EthereumProviderOptions } from '@walletconnect/ethereum-provider'
 import { Actions, Connector } from '@web3-react/types'
 import { L1_CHAIN_IDS, L2_CHAIN_IDS } from 'constants/chains'
-import { Z_INDEX } from 'theme/zIndex'
 
 import { RPC_URLS } from '../constants/networks'
 
@@ -51,8 +50,6 @@ export class WalletConnectV2 extends Connector {
   }
 
   private getProviderOptions(chainId = this.defaultChainId): EthereumProviderOptions {
-    const darkmode = Boolean(window.matchMedia('(prefers-color-scheme: dark)'))
-
     return {
       projectId: process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID as string,
       chains: [chainId],
@@ -60,27 +57,13 @@ export class WalletConnectV2 extends Connector {
       showQrModal: this.qrcode,
       metadata: getWalletConnectMetadata(),
       telemetryEnabled: false,
+      logger: 'silent',
       customStoragePrefix: 'human-governance-walletconnect',
       rpcMap: RPC_URLS_WITHOUT_FALLBACKS,
       // as of 6/16/2023 there are no docs for `optionalMethods`
       // this set of optional methods fixes a bug we encountered where permit2 signatures were never received from the connected wallet
       // source: https://uniswapteam.slack.com/archives/C03R5G8T8BH/p1686858618164089?thread_ts=1686778867.145689&cid=C03R5G8T8BH
       optionalMethods: ['eth_signTypedData', 'eth_signTypedData_v4', 'eth_sign'],
-      qrModalOptions: {
-        desktopWallets: undefined,
-        enableExplorer: false,
-        explorerExcludedWalletIds: undefined,
-        explorerRecommendedWalletIds: 'NONE',
-        mobileWallets: undefined,
-        privacyPolicyUrl: undefined,
-        termsOfServiceUrl: undefined,
-        themeMode: darkmode ? 'dark' : 'light',
-        themeVariables: {
-          '--wcm-font-family': '"Inter custom", sans-serif',
-          '--wcm-z-index': Z_INDEX.modal.toString(),
-        },
-        walletImages: undefined,
-      },
     }
   }
 
@@ -115,17 +98,22 @@ export class WalletConnectV2 extends Connector {
 
   async connectEagerly() {
     const cancelActivation = this.actions.startActivation()
+    let provider: EthereumProvider
 
     try {
-      const provider = await this.initialize()
-      if (!provider.session) throw new Error('No active session found. Connect your wallet first.')
-
-      this.actions.update({ accounts: provider.accounts, chainId: provider.chainId })
+      provider = await this.initialize()
     } catch (error) {
       await this.deactivate()
       cancelActivation()
       throw error
     }
+
+    if (!provider.session) {
+      cancelActivation()
+      throw new Error('No active session found. Connect your wallet first.')
+    }
+
+    this.actions.update({ accounts: provider.accounts, chainId: provider.chainId })
   }
 
   async activate(chainId = this.defaultChainId) {
@@ -147,7 +135,7 @@ export class WalletConnectV2 extends Connector {
       await provider.enable()
       this.actions.update({ chainId: provider.chainId, accounts: provider.accounts })
     } catch (error) {
-      await this.deactivate()
+      await provider.signer.cleanupPendingPairings({ deletePairings: true }).catch(() => undefined)
       cancelActivation()
       throw error
     }
@@ -158,7 +146,12 @@ export class WalletConnectV2 extends Connector {
       ?.removeListener('disconnect', this.disconnectListener)
       .removeListener('chainChanged', this.chainChangedListener)
       .removeListener('accountsChanged', this.accountsChangedListener)
-      .disconnect()
+
+    if (this.provider?.session) {
+      await this.provider.disconnect()
+    } else {
+      await this.provider?.signer.cleanupPendingPairings({ deletePairings: true }).catch(() => undefined)
+    }
 
     this.provider = undefined
     this.eagerConnection = undefined
