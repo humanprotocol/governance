@@ -4,6 +4,13 @@ import { Z_INDEX } from 'theme/zIndex'
 
 import { RPC_URLS } from '../constants/networks'
 
+const getWalletConnectMetadata = () => ({
+  name: 'Human Governance',
+  description: 'Human Protocol Governance',
+  url: window.location.origin,
+  icons: [`${window.location.origin}/favicon.png`],
+})
+
 // Avoid testing for the best URL by only passing a single URL per chain.
 // Otherwise, WC will not initialize until all URLs have been tested (see getBestUrl in web3-react).
 const RPC_URLS_WITHOUT_FALLBACKS = Object.entries(RPC_URLS).reduce(
@@ -29,6 +36,7 @@ export class WalletConnectV2 extends WalletConnect {
         chains: [defaultChainId],
         optionalChains: [...L1_CHAIN_IDS, ...L2_CHAIN_IDS],
         showQrModal: qrcode,
+        metadata: getWalletConnectMetadata(),
         rpcMap: RPC_URLS_WITHOUT_FALLBACKS,
         // as of 6/16/2023 there are no docs for `optionalMethods`
         // this set of optional methods fixes a bug we encountered where permit2 signatures were never received from the connected wallet
