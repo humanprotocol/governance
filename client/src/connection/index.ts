@@ -89,8 +89,7 @@ export const walletConnectV2Connection: Connection = new (class implements Conne
 
   private _connector = initializeConnector<WalletConnectV2>(this.initializer)
   overrideActivate = (chainId?: SupportedChainId) => {
-    // Always re-create the connector, so that the chainId is updated.
-    this._connector = initializeConnector((actions) => this.initializer(actions, chainId))
+    this.connector.setDefaultChainId(chainId)
     return false
   }
   get connector() {
