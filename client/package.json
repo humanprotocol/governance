@@ -200,6 +200,7 @@
   "packageManager": "yarn@1.22.19",
   "resolutions": {
     "@walletconnect/ethereum-provider": "2.23.9",
+    "viem/@noble/hashes": "1.8.0",
     "chalk": "4.1.2",
     "strip-ansi": "6.0.0",
     "color-convert": "2.0.1",

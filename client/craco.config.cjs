@@ -133,6 +133,9 @@ module.exports = {
 
       // Configure webpack resolution:
       webpackConfig.resolve = Object.assign(webpackConfig.resolve, {
+        alias: Object.assign(webpackConfig.resolve.alias || {}, {
+          '@noble/hashes': path.join(__dirname, 'node_modules/@noble/hashes'),
+        }),
         plugins: webpackConfig.resolve.plugins.map((plugin) => {
           // Allow vanilla-extract in production builds.
           // This is necessary because create-react-app guards against external imports.
