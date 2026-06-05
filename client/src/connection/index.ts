@@ -38,21 +38,29 @@ const getIsInjectedMobileBrowser = () => getIsCoinbaseWalletBrowser() || getIsMe
 
 const getShouldAdvertiseMetaMask = () =>
   !getIsMetaMaskWallet() && !isMobile && (!getIsInjected() || getIsCoinbaseWallet())
+const getShouldOpenMetaMaskMobile = () => isMobile && !getIsInjected()
 const getIsGenericInjector = () => getIsInjected() && !getIsMetaMaskWallet() && !getIsCoinbaseWallet()
+
+const getMetaMaskMobileDeepLink = () =>
+  `https://metamask.app.link/dapp/${window.location.href.replace(/^https?:\/\//, '')}`
 
 const [web3Injected, web3InjectedHooks] = initializeConnector<MetaMask>((actions) => new MetaMask({ actions, onError }))
 
 const injectedConnection: Connection = {
-  getName: () => getInjection().name,
+  getName: () => (getShouldOpenMetaMaskMobile() ? 'MetaMask' : getInjection().name),
   connector: web3Injected,
   hooks: web3InjectedHooks,
   type: ConnectionType.INJECTED,
   getIcon: (isDarkMode: boolean) => getInjection(isDarkMode).icon,
-  shouldDisplay: () => getIsMetaMaskWallet() || getShouldAdvertiseMetaMask() || getIsGenericInjector(),
-  // If on non-injected, non-mobile browser, prompt user to install Metamask
+  shouldDisplay: () =>
+    getIsMetaMaskWallet() || getShouldAdvertiseMetaMask() || getShouldOpenMetaMaskMobile() || getIsGenericInjector(),
   overrideActivate: () => {
     if (getShouldAdvertiseMetaMask()) {
       window.open('https://metamask.io/', 'inst_metamask')
+      return true
+    }
+    if (getShouldOpenMetaMaskMobile()) {
+      window.open(getMetaMaskMobileDeepLink(), 'inst_metamask')
       return true
     }
     return false
@@ -77,8 +85,7 @@ export const walletConnectV2Connection: Connection = new (class implements Conne
   type = ConnectionType.WALLET_CONNECT_V2
   getName = () => 'WalletConnect'
   getIcon = () => WALLET_CONNECT_ICON
-  shouldDisplay = () => false
-  // BLOCKYTODO: if you want to see WalletConnect on the "Connect a wallet" list you need to change false to !getIsInjectedMobileBrowser()
+  shouldDisplay = () => !getIsInjectedMobileBrowser()
 
   private _connector = initializeConnector<WalletConnectV2>(this.initializer)
   overrideActivate = (chainId?: SupportedChainId) => {
